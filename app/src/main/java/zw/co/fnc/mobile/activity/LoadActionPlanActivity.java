@@ -58,7 +58,6 @@ public class LoadActionPlanActivity extends BaseActivity {
             mainRow.setLayoutParams(rowParams);
             TextView driverOfStunting = new TextView(this);
             driverOfStunting.setText(d.keyProblemCategory.name);
-            Log.d("Problem category", d.keyProblemCategory.name);
             driverOfStunting.setTextSize(18);
             driverOfStunting.setTextColor(getResources().getColor(R.color.colorPrimary));
             driverOfStunting.setPadding(10, 10, 10, 5);
@@ -82,8 +81,6 @@ public class LoadActionPlanActivity extends BaseActivity {
             indicatorHeaderRow.addView(indicatorHeading);
             indicatorHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
             indicatorTable.addView(indicatorHeaderRow);
-            Log.d("Indicator", "Size: " +Indicator.findByKeyProblem(d).size());
-            Log.d("Keyprob", AppUtil.createGson().toJson(d));
             for(Indicator indicator : Indicator.findByKeyProblem(d)){
                 TableRow indicatorRow = new TableRow(this);
                 indicatorRow.setLayoutParams(rowParams);
@@ -116,7 +113,6 @@ public class LoadActionPlanActivity extends BaseActivity {
             interventionHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
             interventionTable.addView(interventionHeaderRow);
             for(InterventionCategory intervention : InterventionCategory.findByKeyProblem(d)){
-                Log.d("IntervContract", AppUtil.createGson().toJson(intervention));
                 TableRow interventionRow = new TableRow(this);
                 interventionRow.setLayoutParams(rowParams);
                 TextView problemIntervention = new TextView(this);
@@ -160,7 +156,6 @@ public class LoadActionPlanActivity extends BaseActivity {
                 actionHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
                 actionRequiredTable.addView(actionHeaderRow);
                 for(ActionRequired action : ActionRequired.findByInterventionCategory(intervention)){
-                    Log.d("Actions", ActionRequired.findByInterventionCategory(intervention).size() + "");
                     TableRow actionRequiredDataRow = new TableRow(this);
                     actionRequiredDataRow.setLayoutParams(rowParams);
                     actionRequiredDataRow.setBackgroundResource(R.drawable.indicator_background);
