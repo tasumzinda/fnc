@@ -29,6 +29,8 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
     private ArrayList<Long> resourcesNeeded;
     private KeyProblem driver;
     private ArrayList<Long> departments;
+    private ArrayList<Long> strategyCategories;
+    private ArrayList<Long> potentialChallenges;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,8 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
         period = intent.getLongExtra("period", 0L);
         microPlan = intent.getLongExtra("microPlan", 0L);
         driver = (KeyProblem) intent.getSerializableExtra("driver");
+        strategyCategories = (ArrayList<Long>) intent.getSerializableExtra("strategyCategories");
+        potentialChallenges = (ArrayList<Long>) intent.getSerializableExtra("potentialChallenges");
         driverOfStuntingCategory = intent.getLongExtra("driverOfStuntingCategory", 0L);
         indicators = (ArrayList<Indicator>) intent.getSerializableExtra("indicators");
         interventions = (ArrayList<InterventionCategory>) intent.getSerializableExtra("interventions");
@@ -71,7 +75,6 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
                 }
             }
         }else if(departments != null){
-            Log.d("Test", "Inside");
             ArrayList<Long> list = departments;
             int count = departmentCategoryArrayAdapter.getCount();
             for(int k = 0; k < count; k++){
@@ -103,6 +106,8 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
             intent.putExtra("driverId", driverId);
             intent.putExtra("resourcesNeeded", resourcesNeeded);
             intent.putExtra("driver", driver);
+            intent.putExtra("strategyCategories", strategyCategories);
+            intent.putExtra("potentialChallenges", potentialChallenges);
             startActivity(intent);
             finish();
         }
@@ -147,6 +152,8 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
         intent.putExtra("percentageDone", percentageDone);
         intent.putExtra("actionRequired", actionRequired);
         intent.putExtra("driver", driver);
+        intent.putExtra("strategyCategories", strategyCategories);
+        intent.putExtra("potentialChallenges", potentialChallenges);
         startActivity(intent);
         finish();
     }

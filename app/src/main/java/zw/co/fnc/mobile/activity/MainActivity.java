@@ -14,6 +14,8 @@ import zw.co.fnc.mobile.R;
 import zw.co.fnc.mobile.business.domain.*;
 import zw.co.fnc.mobile.util.AppUtil;
 
+import java.util.ArrayList;
+
 public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     private Spinner province;
@@ -28,6 +30,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private String actualDateOfCompletion;
     private String percentageDone;
     private Long actionRequired;
+    private ArrayList<Long> strategyCategories;
+    private ArrayList<Long> potentialChallenges;
+    private ArrayList<Long> departmentCategories;
+    private ArrayList<Long> resourcesNeeded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +46,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         actualDateOfCompletion = intent.getStringExtra("actualDateOfCompletion");
         percentageDone = intent.getStringExtra("percentageDone");
         actionRequired = intent.getLongExtra("actionRequired", 0L);
+        resourcesNeeded = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
+        departmentCategories = (ArrayList<Long>) intent.getSerializableExtra("departmentCategories");
+        strategyCategories = (ArrayList<Long>) intent.getSerializableExtra("strategyCategories");
+        potentialChallenges = (ArrayList<Long>) intent.getSerializableExtra("potentialChallenges");
         province = (Spinner) findViewById(R.id.province);
         district = (Spinner) findViewById(R.id.district);
         ward = (Spinner) findViewById(R.id.ward);
@@ -139,6 +149,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
                     intent.putExtra("percentageDone", percentageDone);
                     intent.putExtra("actionRequired", actionRequired);
+                    intent.putExtra("potentialChallenges", potentialChallenges);
+                    intent.putExtra("strategyCategories", strategyCategories);
+                    intent.putExtra("departmentCategories", departmentCategories);
+                    intent.putExtra("resourcesNeeded", resourcesNeeded);
                     startActivity(intent);
                     finish();
                 }else{

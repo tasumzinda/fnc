@@ -42,6 +42,8 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
     private Long driverId;
     KeyProblem driver;
     private KeyProblem driver1;
+    private ArrayList<Long> strategyCategories;
+    private ArrayList<Long> potentialChallenges;
 
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -65,6 +67,8 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
         actionRequired = intent.getLongExtra("actionRequired", 0L);
         resourcesNeeded = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
         departmentCategories = (ArrayList<Long>) intent.getSerializableExtra("departmentCategories");
+        strategyCategories = (ArrayList<Long>) intent.getSerializableExtra("strategyCategories");
+        potentialChallenges = (ArrayList<Long>) intent.getSerializableExtra("potentialChallenges");
         strategyCategoryArrayAdapter = new ArrayAdapter<>(this, R.layout.check_box_item, StrategyCategory.getAll());
         strategys.setAdapter(strategyCategoryArrayAdapter);
         potentialChallengesCategoryArrayAdapter = new ArrayAdapter<>(this, R.layout.check_box_item, PotentialChallengesCategory.getAll());
@@ -91,6 +95,24 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
                     if(challengesList.contains(current)){
                         challenges.setItemChecked(k, true);
                     }
+                }
+            }
+        }else if(strategyCategories != null){
+            ArrayList<Long> list = strategyCategories;
+            int count = strategyCategoryArrayAdapter.getCount();
+            for(int k = 0; k < count; k++){
+                StrategyCategory current = strategyCategoryArrayAdapter.getItem(k);
+                if(list.contains(current.getId())){
+                    strategys.setItemChecked(k, true);
+                }
+            }
+
+            ArrayList<Long> list1 = potentialChallenges;
+            count = potentialChallengesCategoryArrayAdapter.getCount();
+            for(int k = 0; k < count; k++){
+                PotentialChallengesCategory current = potentialChallengesCategoryArrayAdapter.getItem(k);
+                if(list1.contains(current.getId())){
+                    challenges.setItemChecked(k, true);
                 }
             }
         }
