@@ -75,4 +75,12 @@ public class ActionRequired extends Model implements Serializable{
                 .execute();
     }
 
+    public static List<ActionRequired> findByKeyProblemAndInterventionCategory(KeyProblem keyProblem, InterventionCategory interventionCategory){
+        return new Select()
+                .from(ActionRequired.class)
+                .where("intervention_category = ?", interventionCategory.getId())
+                .where("key_problem = ?", keyProblem.getId())
+                .execute();
+    }
+
 }

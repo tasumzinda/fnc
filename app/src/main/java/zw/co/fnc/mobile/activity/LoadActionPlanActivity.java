@@ -155,7 +155,7 @@ public class LoadActionPlanActivity extends BaseActivity {
                 actionHeaderRow.addView(actionHeading);
                 actionHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
                 actionRequiredTable.addView(actionHeaderRow);
-                for(ActionRequired action : ActionRequired.findByInterventionCategory(intervention)){
+                for(ActionRequired action : ActionRequired.findByKeyProblemAndInterventionCategory(d, intervention)){
                     TableRow actionRequiredDataRow = new TableRow(this);
                     actionRequiredDataRow.setLayoutParams(rowParams);
                     actionRequiredDataRow.setBackgroundResource(R.drawable.indicator_background);
