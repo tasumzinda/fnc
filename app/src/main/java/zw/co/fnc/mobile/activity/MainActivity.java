@@ -24,6 +24,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private QuarterlyMicroPlan quarterlyMicroPlan;
     private QuarterlyMicroPlan holder;
     private KeyProblem driver;
+    private String expectedDateOfCompletion;
+    private String actualDateOfCompletion;
+    private String percentageDone;
+    private Long actionRequired;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +36,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         Intent intent = getIntent();
         holder = (QuarterlyMicroPlan) intent.getSerializableExtra("plan");
         driver = (KeyProblem) intent.getSerializableExtra("driver");
+        expectedDateOfCompletion = intent.getStringExtra("expectedDateOfCompletion");
+        actualDateOfCompletion = intent.getStringExtra("actualDateOfCompletion");
+        percentageDone = intent.getStringExtra("percentageDone");
+        actionRequired = intent.getLongExtra("actionRequired", 0L);
         province = (Spinner) findViewById(R.id.province);
         district = (Spinner) findViewById(R.id.district);
         ward = (Spinner) findViewById(R.id.ward);
@@ -127,6 +135,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     holder.ward = (Ward) ward.getSelectedItem();
                     intent.putExtra("plan", holder);
                     intent.putExtra("driver", driver);
+                    intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion);
+                    intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
+                    intent.putExtra("percentageDone", percentageDone);
+                    intent.putExtra("actionRequired", actionRequired);
                     startActivity(intent);
                     finish();
                 }else{

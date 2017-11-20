@@ -10,6 +10,7 @@ import android.widget.*;
 import zw.co.fnc.mobile.R;
 import zw.co.fnc.mobile.business.domain.*;
 import zw.co.fnc.mobile.util.AppUtil;
+import zw.co.fnc.mobile.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,6 +38,11 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
     private ArrayList<Long> strategyCategories;
     private ArrayList<Long> potentialChallenges;
     private KeyProblem driver;
+    private Long action;
+    private String expectedDate;
+    private String actualDate;
+    private String percentage;
+    private ArrayList<Long> resources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +55,17 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         period = intent.getLongExtra("period", 0L);
         microPlan = intent.getLongExtra("microPlan", 0L);
         driver = (KeyProblem) intent.getSerializableExtra("driver");
+        expectedDate = intent.getStringExtra("expectedDateOfCompletion");
+        actualDate = intent.getStringExtra("actualDateOfCompletion");
+        percentage = intent.getStringExtra("percentageDone");
+        resources = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
         strategyCategories = (ArrayList<Long>) intent.getSerializableExtra("strategyCategories");
         potentialChallenges = (ArrayList<Long>) intent.getSerializableExtra("potentialChallenges");
         departmentCategories = (ArrayList<Long>) intent.getSerializableExtra("departmentCategories");
         driverOfStuntingCategory = intent.getLongExtra("driverOfStuntingCategory", 0L);
         indicators = (ArrayList<Indicator>) intent.getSerializableExtra("indicators");
         interventions = (ArrayList<InterventionCategory>) intent.getSerializableExtra("interventions");
+        action =  intent.getLongExtra("actionRequired", 0L);
         actionRequired = (Spinner) findViewById(R.id.action_required);
         expectedDateOfCompletion = (EditText) findViewById(R.id.exp_date_of_completion);
         actualDateOfCompletion = (EditText) findViewById(R.id.actual_date_of_completion);
@@ -90,7 +101,6 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         expectedDateOfCompletion.setOnClickListener(this);
         actualDateOfCompletion.setOnClickListener(this);
         if(driverId != 0L){
-            Log.d("Test", "I am in");
             KeyProblem d = KeyProblem.findById(driverId);
             int i = 0;
             for(ActionRequired action : ActionRequired.findByKeyProblem(d)){
@@ -117,10 +127,33 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
                     }
                 }
             }
+        }else if(action != 0L){
+            int i = 0;
+            for(ActionCategory category : ActionCategory.getAll()){
+                if (action != null && action.equals(((ActionCategory) actionRequired.getItemAtPosition(i)).getId())) {
+                    actionRequired.setSelection(i, true);
+                    break;
+                }
+                i++;
+            }
+            if(actualDate != null && ! actualDate.isEmpty()){
+                updateLabel(DateUtil.getDateFromString(actualDate), actualDateOfCompletion);
+            }
+            updateLabel(DateUtil.getDateFromString(expectedDate), expectedDateOfCompletion);
+            if(percentage != null){
+                percentageDone.setText(percentage);
+            }
+            ArrayList<Long> list = resources;
+            int count = resourcesNeededCategoryArrayAdapter.getCount();
+            for(int k = 0; k < count; k++){
+                ResourcesNeededCategory current = resourcesNeededCategoryArrayAdapter.getItem(k);
+                if(list.contains(current.getId())){
+                    resourcesNeeded.setItemChecked(k, true);
+                }
+            }
         }
         setSupportActionBar(createToolBar("FNC Mobile::Create/ Edit Ward Intervention Action-Step 1"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Log.d("Driver", driver.keyProblemCategory.name);
     }
 
     public void save(){

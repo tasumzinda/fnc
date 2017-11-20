@@ -37,6 +37,10 @@ public class ActionPlanItemActivity1 extends BaseActivity{
     private ArrayList<Long> resourcesNeeded;
     private ArrayList<Long> strategyCategories;
     private ArrayList<Long> potentialChallenges;
+    private String expectedDateOfCompletion;
+    private String actualDateOfCompletion;
+    private String percentageDone;
+    private Long actionRequired;
 
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -48,6 +52,10 @@ public class ActionPlanItemActivity1 extends BaseActivity{
         district = intent.getLongExtra("district", 0L);
         ward = intent.getLongExtra("ward", 0L);
         period = intent.getLongExtra("period", 0L);
+        expectedDateOfCompletion = intent.getStringExtra("expectedDateOfCompletion");
+        actualDateOfCompletion = intent.getStringExtra("actualDateOfCompletion");
+        percentageDone = intent.getStringExtra("percentageDone");
+        actionRequired = intent.getLongExtra("actionRequired", 0L);
         strategyCategories = (ArrayList<Long>) intent.getSerializableExtra("strategyCategories");
         potentialChallenges = (ArrayList<Long>) intent.getSerializableExtra("potentialChallenges");
         resourcesNeeded = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
@@ -187,6 +195,10 @@ public class ActionPlanItemActivity1 extends BaseActivity{
                         intent.putExtra("resourcesNeeded", resourcesNeeded);
                         intent.putExtra("potentialChallenges", potentialChallenges);
                         intent.putExtra("strategyCategories", strategyCategories);
+                        intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion);
+                        intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
+                        intent.putExtra("percentageDone", percentageDone);
+                        intent.putExtra("actionRequired", actionRequired);
                         startActivity(intent);
                         finish();
                     }
@@ -217,6 +229,10 @@ public class ActionPlanItemActivity1 extends BaseActivity{
         intent.putExtra("resourcesNeeded", resourcesNeeded);
         intent.putExtra("potentialChallenges", potentialChallenges);
         intent.putExtra("strategyCategories", strategyCategories);
+        intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion);
+        intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
+        intent.putExtra("percentageDone", percentageDone);
+        intent.putExtra("actionRequired", actionRequired);
         startActivity(intent);
         finish();
     }

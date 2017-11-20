@@ -33,6 +33,10 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
     private ArrayList<Long> resourcesNeeded;
     private ArrayList<Long> strategyCategories;
     private ArrayList<Long> potentialChallenges;
+    private String expectedDateOfCompletion;
+    private String actualDateOfCompletion;
+    private String percentageDone;
+    private Long actionRequired;
 
     @Override
     public void onCreate(Bundle savedInstance){
@@ -61,6 +65,10 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
         ward = intent.getLongExtra("ward", 0L);
         period = intent.getLongExtra("period", 0L);
         microPlan = intent.getLongExtra("microPlan", 0L);
+        expectedDateOfCompletion = intent.getStringExtra("expectedDateOfCompletion");
+        actualDateOfCompletion = intent.getStringExtra("actualDateOfCompletion");
+        percentageDone = intent.getStringExtra("percentageDone");
+        actionRequired = intent.getLongExtra("actionRequired", 0L);
         strategyCategories = (ArrayList<Long>) intent.getSerializableExtra("strategyCategories");
         potentialChallenges = (ArrayList<Long>) intent.getSerializableExtra("potentialChallenges");
         resourcesNeeded = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
@@ -156,6 +164,10 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
         intent.putExtra("resourcesNeeded", resourcesNeeded);
         intent.putExtra("potentialChallenges", potentialChallenges);
         intent.putExtra("strategyCategories", strategyCategories);
+        intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion);
+        intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
+        intent.putExtra("percentageDone", percentageDone);
+        intent.putExtra("actionRequired", actionRequired);
         startActivity(intent);
         finish();
     }
@@ -185,6 +197,10 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
             }
             intent.putExtra("indicators", getIndicators());
             intent.putExtra("interventions", getInterventions());
+            intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion);
+            intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
+            intent.putExtra("percentageDone", percentageDone);
+            intent.putExtra("actionRequired", actionRequired);
             driver.keyProblemCategory = (KeyProblemCategory) driverOfStunting.getSelectedItem();
             driver.interventions = getInterventions();
             driver.indicators = getIndicators();
