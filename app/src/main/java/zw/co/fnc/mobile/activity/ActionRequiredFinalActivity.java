@@ -239,7 +239,7 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
     }
 
     public void onBackPressed(){
-        Intent intent = new Intent(ActionRequiredFinalActivity.this, ActionRequiredStep1Activity.class);
+        Intent intent = new Intent(ActionRequiredFinalActivity.this, ActionRequiredStep2Activity.class);
         intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion);
         intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
         intent.putExtra("percentageDone", percentageDone);
@@ -255,6 +255,7 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
         intent.putExtra("driverId", driverId);
         intent.putExtra("strategyCategories", getStrategies());
         intent.putExtra("potentialChallenges", getPotentialChallenges());
+        intent.putExtra("departmentCategories", departmentCategories);
         intent.putExtra("driver", driver1);
         startActivity(intent);
         finish();

@@ -1,6 +1,7 @@
 package zw.co.fnc.mobile.activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -27,6 +28,7 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
     private Long actionRequired;
     private ArrayList<Long> resourcesNeeded;
     private KeyProblem driver;
+    private ArrayList<Long> departments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
         percentageDone = intent.getStringExtra("percentageDone");
         actionRequired = intent.getLongExtra("actionRequired", 0L);
         resourcesNeeded = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
+        departments = (ArrayList<Long>) intent.getSerializableExtra("departmentCategories");
         next = (Button) findViewById(R.id.btn_next);
         departmentCategory = (ListView) findViewById(R.id.department_category);
         departmentCategoryArrayAdapter = new ArrayAdapter<>(this, R.layout.check_box_item, DepartmentCategory.getAll());
@@ -65,6 +68,16 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
                     if(resources.contains(current)){
                         departmentCategory.setItemChecked(i, true);
                     }
+                }
+            }
+        }else if(departments != null){
+            Log.d("Test", "Inside");
+            ArrayList<Long> list = departments;
+            int count = departmentCategoryArrayAdapter.getCount();
+            for(int k = 0; k < count; k++){
+                DepartmentCategory current = departmentCategoryArrayAdapter.getItem(k);
+                if(list.contains(current.getId())){
+                    departmentCategory.setItemChecked(k, true);
                 }
             }
         }
