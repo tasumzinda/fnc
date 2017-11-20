@@ -1,0 +1,14 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="activity_height">5dp</dimen>
+    <dimen name="input_side_margin">1dp</dimen>
+    <dimen name="text_input_layout_margin_top">8dp</dimen>
+    <dimen name="text_input_layout_margin_bottom">8dp</dimen>
+    <dimen name="text_size">16sp</dimen>
+    <dimen name="margin_top">5dp</dimen>
+    <dimen name="notepad_margin">12dp</dimen>
+    <dimen name="button_height">70dp</dimen>
+</resources>

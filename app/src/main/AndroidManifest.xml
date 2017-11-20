@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="zw.co.fnc.mobile">
+
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS"/>
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL"/>
+
+    <application
+            android:name=".util.FNCMobile"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:supportsRtl="true"
+            android:theme="@style/MyAppTheme">
+        <meta-data
+                android:name="AA_DB_VERSION"
+                android:value="1"/>
+        <meta-data
+                android:name="AA_DB_NAME"
+                android:value="fnc.db"/>
+
+        <activity
+                android:name=".activity.LauncherActivity"
+                android:label="@string/app_name"
+                android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.MainActivity">
+        </activity>
+        <activity android:name=".activity.KeyProblemActivity"/>
+        <activity android:name=".activity.ActionPlanItemActivity"/>
+        <activity
+                android:name=".activity.ActionRequiredStep1Activity"
+                android:label="@string/title_activity_action_required"
+                android:theme="@style/MyAppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".activity.ActionRequiredFinalActivity"/>
+        <activity android:name=".activity.LoadActionPlanActivity"/>
+        <activity android:name=".activity.ActionPlanItemActivity1"/>
+
+        <service android:name=".rest.PullService"/>
+
+        <activity android:name=".activity.ActionRequiredStep2Activity">
+        </activity>
+    </application>
+
+</manifest>

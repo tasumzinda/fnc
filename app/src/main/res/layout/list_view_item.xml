@@ -1,0 +1,320 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/colorPrimary">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:orientation="horizontal"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      style="?android:attr/textAppearanceLarge"
+                      android:background="@color/colorPrimary">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:paddingLeft="15dip"
+                        android:paddingRight="8dip"
+                        android:textSize="16sp"
+                        android:gravity="center_vertical"
+                        android:text="Driver Of Stunting"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorWhite"
+                        android:textAllCaps="true" />
+                <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="50dp"
+                        android:paddingLeft="15dip"
+                        android:paddingRight="8dip"
+                        android:textSize="16sp"
+                        android:gravity="center_vertical"
+                        android:textAllCaps="true" />
+                <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="50dp"
+                        android:paddingLeft="15dip"
+                        android:paddingRight="8dip"
+                        android:textSize="16sp"
+                        android:gravity="center_vertical"
+                        android:textAllCaps="true" />
+                <TextView
+                        android:text="Problem Indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:paddingLeft="15dip"
+                        android:paddingRight="8dip"
+                        android:textSize="16sp"
+                        android:textColor="@color/colorWhite"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:textAllCaps="true" />
+                <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="50dp"
+                        android:paddingLeft="15dip"
+                        android:paddingRight="8dip"
+                        android:textSize="16sp"
+                        android:gravity="center_vertical"
+                        android:textAllCaps="true" />
+                <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="50dp"
+                        android:paddingLeft="15dip"
+                        android:paddingRight="8dip"
+                        android:textSize="16sp"
+                        android:gravity="center_vertical"
+                        android:textAllCaps="true" />
+                <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="50dp"
+                        android:paddingLeft="15dip"
+                        android:paddingRight="8dip"
+                        android:textSize="16sp"
+                        android:gravity="center_vertical"
+                        android:textAllCaps="true" />
+            <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="50dp"
+                    android:paddingLeft="15dip"
+                    android:paddingRight="8dip"
+                    android:textSize="16sp"
+                    android:gravity="center_vertical"
+                    android:textAllCaps="true" />
+            <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="50dp"
+                    android:paddingLeft="15dip"
+                    android:paddingRight="8dip"
+                    android:textSize="16sp"
+                    android:gravity="center_vertical"
+                    android:textAllCaps="true" />
+            <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="50dp"
+                    android:paddingLeft="15dip"
+                    android:paddingRight="8dip"
+                    android:textSize="16sp"
+                    android:gravity="center_vertical"
+                    android:textAllCaps="true" />
+                <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="50dp"
+                        android:paddingLeft="15dip"
+                        android:paddingRight="8dip"
+                        android:textSize="16sp"
+                        android:gravity="center_vertical"
+                        android:textAllCaps="true" />
+                <TextView
+                        style="?android:attr/textAppearanceLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:paddingLeft="15dip"
+                        android:paddingRight="8dip"
+                        android:textSize="16sp"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/colorWhite"
+                        android:text="Intervention To Address Problem"
+                        android:textStyle="bold"
+                        android:textAllCaps="true" />
+        </LinearLayout>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:orientation="horizontal"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:background="#FFF">
+
+        <TextView
+                android:id="@+id/driverOfStunting"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:paddingLeft="15dip"
+                android:paddingRight="8dip"
+                android:textSize="16sp"
+                android:textAlignment="center"
+                android:gravity="center_vertical"/>
+                <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="50dp"
+                        android:paddingLeft="15dip"
+                        android:paddingRight="8dip"
+                        android:textSize="16sp"
+                        android:gravity="center_vertical"
+                        android:textAllCaps="true" />
+
+        <TextView
+                android:id="@+id/indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dip"
+                android:paddingRight="8dip"
+                android:textSize="16sp"
+                android:textAlignment="center"
+                android:gravity="center_vertical"/>
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                              android:orientation="horizontal"
+                              android:layout_width="fill_parent"
+                              android:layout_height="wrap_content"
+                              android:background="#FFF">
+                        <TextView
+                                android:id="@+id/intervention"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:paddingLeft="15dip"
+                                android:paddingRight="8dip"
+                                android:textSize="16sp"
+                                android:textAlignment="center"
+                                android:gravity="center_vertical"/>
+                        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                      android:orientation="vertical"
+                                      android:layout_width="fill_parent"
+                                      android:layout_height="wrap_content"
+                                      android:background="#FFF">
+                                <TextView
+                                        android:text="Action Required"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="30dp"
+                                        android:layout_marginTop="2dp"
+                                        android:paddingLeft="15dip"
+                                        android:paddingRight="8dip"
+                                        android:textSize="16sp"
+                                        android:textAlignment="center"
+                                        android:textAllCaps="true"
+                                        android:textColor="@color/colorWhite"
+                                        android:textStyle="bold"
+                                        android:background="@color/colorAccent"
+                                        android:gravity="center_vertical"/>
+                                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                              android:orientation="horizontal"
+                                              android:layout_width="fill_parent"
+                                              android:layout_height="wrap_content"
+                                              android:background="#FFF">
+                                        <TextView
+                                                android:id="@+id/action"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:paddingLeft="15dip"
+                                                android:paddingRight="8dip"
+                                                android:textAlignment="center"
+                                                android:textSize="16sp"
+                                                android:gravity="center_vertical"/>
+                                        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                      android:orientation="vertical"
+                                                      android:layout_width="fill_parent"
+                                                      android:layout_height="wrap_content"
+                                                      android:background="#FFF">
+                                                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                              android:orientation="horizontal"
+                                                              android:layout_width="fill_parent"
+                                                              android:layout_height="wrap_content"
+                                                              android:layout_marginTop="2dp"
+                                                              android:background="@color/yellow">
+                                                        <TextView
+                                                                android:text="Resources Needed"
+                                                                android:layout_width="wrap_content"
+                                                                android:layout_height="50dp"
+                                                                android:paddingLeft="15dip"
+                                                                android:paddingRight="8dip"
+                                                                android:textSize="14sp"
+                                                                android:textAllCaps="true"
+                                                                android:textColor="@color/colorWhite"
+                                                                android:textStyle="bold"
+                                                                android:textAlignment="center"
+                                                                android:gravity="center_vertical"/>
+                                                    <TextView
+                                                            android:layout_width="120dp"
+                                                            android:layout_height="wrap_content"
+                                                            android:paddingLeft="15dip"
+                                                            android:paddingRight="8dip"
+                                                            android:textSize="16sp"
+                                                            android:textAlignment="center"
+                                                            android:gravity="center_vertical"/>
+                                                        <TextView
+                                                                android:text="Potential Challenges"
+                                                                android:layout_width="wrap_content"
+                                                                android:layout_height="50dp"
+                                                                android:paddingLeft="15dip"
+                                                                android:paddingRight="8dip"
+                                                                android:textSize="14sp"
+                                                                android:textAllCaps="true"
+                                                                android:textColor="@color/colorWhite"
+                                                                android:textStyle="bold"
+                                                                android:textAlignment="center"
+                                                                android:gravity="center_vertical"/>
+                                                    <TextView
+                                                            android:layout_width="120dp"
+                                                            android:layout_height="wrap_content"
+                                                            android:paddingLeft="15dip"
+                                                            android:paddingRight="8dip"
+                                                            android:textSize="16sp"
+                                                            android:textAlignment="center"
+                                                            android:gravity="center_vertical"/>
+                                                        <TextView
+                                                                android:text="Strategy To Overcome Challenges"
+                                                                android:layout_width="wrap_content"
+                                                                android:layout_height="50dp"
+                                                                android:paddingLeft="15dip"
+                                                                android:paddingRight="8dip"
+                                                                android:textSize="14sp"
+                                                                android:textAllCaps="true"
+                                                                android:textColor="@color/colorWhite"
+                                                                android:textStyle="bold"
+                                                                android:textAlignment="center"
+                                                                android:gravity="center_vertical"/>
+                                                </LinearLayout>
+                                                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                              android:orientation="horizontal"
+                                                              android:layout_width="fill_parent"
+                                                              android:layout_height="wrap_content"
+                                                              android:background="#FFF">
+                                                        <TextView
+                                                                android:id="@+id/resources"
+                                                                android:layout_width="wrap_content"
+                                                                android:layout_height="wrap_content"
+                                                                android:paddingLeft="15dip"
+                                                                android:paddingRight="8dip"
+                                                                android:textSize="16sp"
+                                                                android:textAlignment="center"
+                                                                android:gravity="center_vertical"/>
+                                                        <TextView
+                                                                android:layout_width="120dp"
+                                                                android:layout_height="wrap_content"
+                                                                android:paddingLeft="15dip"
+                                                                android:paddingRight="8dip"
+                                                                android:textSize="16sp"
+                                                                android:textAlignment="center"
+                                                                android:gravity="center_vertical"/>
+                                                    <TextView
+                                                            android:id="@+id/challenges"
+                                                            android:layout_width="wrap_content"
+                                                            android:layout_height="wrap_content"
+                                                            android:paddingLeft="15dip"
+                                                            android:paddingRight="8dip"
+                                                            android:textSize="16sp"
+                                                            android:textAlignment="center"
+                                                            android:gravity="center_vertical"/>
+
+                                                    <TextView
+                                                            android:layout_width="120dp"
+                                                            android:layout_height="wrap_content"
+                                                            android:paddingLeft="15dip"
+                                                            android:paddingRight="8dip"
+                                                            android:textSize="16sp"
+                                                            android:textAlignment="center"
+                                                            android:gravity="center_vertical"/>
+                                                    <TextView
+                                                            android:id="@+id/strategies"
+                                                            android:layout_width="wrap_content"
+                                                            android:layout_height="wrap_content"
+                                                            android:paddingLeft="15dip"
+                                                            android:paddingRight="8dip"
+                                                            android:textSize="16sp"
+                                                            android:textAlignment="center"
+                                                            android:gravity="center_vertical"/>
+                                                </LinearLayout>
+                                        </LinearLayout>
+                                </LinearLayout>
+                        </LinearLayout>
+                </LinearLayout>
+        </LinearLayout>
+</LinearLayout>
+

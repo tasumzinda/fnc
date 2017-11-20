@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">FNC Mobile</string>
+    <string name="action_exit">Exit</string>
+    <string name="date_mismatch_error">End date can not be before start date</string>
+    <string name="action_add">Add New Item</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="btn_save_label">Save</string>
+    <string name="district_prompt">Select District</string>
+    <string name="province_prompt">Select Province</string>
+    <string name="gender_prompt">Select Gender</string>
+    <string name="ward_prompt">Select Ward</string>
+    <string name="period_prompt">Select Period</string>
+    <string name="date_format_error">Enter valid date in this format: 22/01/2016</string>
+    <string name="required_field_error">Field is required</string>
+    <string name="btn_search">Search</string>
+    <string name="driver_prompt">Driver Of Stunting</string>
+    <string name="indicator_prompt">Indicators</string>
+    <string name="intervention_prompt">Interventions To Address Problem</string>
+    <string name="title_activity_action_required">ActionRequiredActivity</string>
+    <string name="action_req_prompt">Action Required</string>
+    <string name="expected_date_of_completion_prompt">Expected Date Of Completion</string>
+    <string name="actual_date_of_completion_prompt">Actual Date Of Completion</string>
+    <string name="percentage_done_prompt">Percentage Done</string>
+    <string name="resources_needed_prompt">Resources Needed</string>
+    <string name="department_category_prompt">Department Category</string>
+    <string name="btn_next">Next</string>
+    <string name="challenges_label">Potential Challenges</string>
+    <string name="strategy_label">Strategy To Overcome Challenge</string>
+</resources>
