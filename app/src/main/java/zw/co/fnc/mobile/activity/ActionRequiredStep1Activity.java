@@ -43,6 +43,7 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
     private String actualDate;
     private String percentage;
     private ArrayList<Long> resources;
+    private Long selectedIntervention;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,8 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         indicators = (ArrayList<Indicator>) intent.getSerializableExtra("indicators");
         interventions = (ArrayList<InterventionCategory>) intent.getSerializableExtra("interventions");
         action =  intent.getLongExtra("actionRequired", 0L);
+        selectedIntervention = intent.getLongExtra("selectedIntervention", 0L);
+        Log.d("Intervention", InterventionCategory.findByServerId(selectedIntervention).name);
         actionRequired = (Spinner) findViewById(R.id.action_required);
         expectedDateOfCompletion = (EditText) findViewById(R.id.exp_date_of_completion);
         actualDateOfCompletion = (EditText) findViewById(R.id.actual_date_of_completion);
@@ -101,7 +104,7 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         expectedDateOfCompletion.setOnClickListener(this);
         actualDateOfCompletion.setOnClickListener(this);
         if(driverId != 0L){
-            KeyProblem d = KeyProblem.findById(driverId);
+            /*KeyProblem d = KeyProblem.findById(driverId);
             int i = 0;
             for(ActionRequired action : ActionRequired.findByKeyProblem(d)){
                 for(ActionCategory category : ActionCategory.getAll()){
@@ -126,7 +129,7 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
                         resourcesNeeded.setItemChecked(i, true);
                     }
                 }
-            }
+            }*/
         }else if(action != 0L){
             int i = 0;
             for(ActionCategory category : ActionCategory.getAll()){
@@ -176,6 +179,21 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
             intent.putExtra("potentialChallenges", potentialChallenges);
             intent.putExtra("strategyCategories", strategyCategories);
             intent.putExtra("driver", driver);
+            ActionRequired action = new ActionRequired();
+            action.actionCategory = (ActionCategory) actionRequired.getSelectedItem();
+            action.actualDateOfCompletion = DateUtil.getDateFromString(actualDateOfCompletion.getText().toString());
+            action.expectedDateOfCompletion = DateUtil.getDateFromString(expectedDateOfCompletion.getText().toString());
+            action.percentageDone = Integer.parseInt(percentageDone.getText().toString());
+            action.resourceIds = getResourcesNeeded();
+            action.interventionCategory = InterventionCategory.findByServerId(selectedIntervention);
+            action.keyProblem = driver;
+            ArrayList<ActionRequired> list = new ArrayList<>();
+            list.add(action);
+            for(InterventionCategory m : interventions){
+                if(m.serverId.equals(selectedIntervention)){
+                    m.actionRequireds = list;
+                }
+            }
             startActivity(intent);
             finish();
         }
@@ -233,13 +251,13 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         intent.putExtra("departmentCategories",departmentCategories);
         intent.putExtra("resourcesNeeded", getResourcesNeeded());
         intent.putExtra("driver", driver);
+        intent.putExtra("driverId", driverId);
         intent.putExtra("potentialChallenges", potentialChallenges);
         intent.putExtra("strategyCategories", strategyCategories);
         intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion.getText().toString());
         intent.putExtra("actualDateOfCompletion", actualDateOfCompletion.getText().toString());
         intent.putExtra("percentageDone", percentageDone.getText().toString());
         intent.putExtra("actionRequired", ((ActionCategory) actionRequired.getSelectedItem()).getId());
-
         startActivity(intent);
         finish();
     }

@@ -52,6 +52,11 @@ public class ActionRequired extends Model implements Serializable{
     @Expose
     public String driverOfStuntingName;
 
+    @Expose
+    public List<ResourcesNeededCategory> resourcesNeededCategorys;
+
+    public List<Long> resourceIds;
+
     public ActionRequired() {
         super();
     }

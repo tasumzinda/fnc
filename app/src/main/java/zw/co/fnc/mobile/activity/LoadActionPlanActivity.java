@@ -123,7 +123,7 @@ public class LoadActionPlanActivity extends BaseActivity {
                 Button addAction = new Button(this);
                 addAction.setText("Review Action");
                 addAction.setTypeface(Typeface.DEFAULT_BOLD);
-                addAction.setOnClickListener(new View.OnClickListener() {
+                /*addAction.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(LoadActionPlanActivity.this, ActionRequiredStep1Activity.class);
@@ -132,7 +132,7 @@ public class LoadActionPlanActivity extends BaseActivity {
                         startActivity(intent);
                         finish();
                     }
-                });
+                });*/
                 interventionRow.addView(problemIntervention);
                 interventionRow.addView(addAction);
                 interventionRow.setBackgroundResource(R.drawable.indicator_background);

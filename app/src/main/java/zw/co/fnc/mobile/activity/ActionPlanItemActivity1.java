@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.*;
 import zw.co.fnc.mobile.R;
 import zw.co.fnc.mobile.business.domain.*;
+import zw.co.fnc.mobile.util.AppUtil;
 
 import java.util.ArrayList;
 
@@ -41,6 +42,7 @@ public class ActionPlanItemActivity1 extends BaseActivity{
     private String actualDateOfCompletion;
     private String percentageDone;
     private Long actionRequired;
+    private Long driverId;
 
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -169,7 +171,7 @@ public class ActionPlanItemActivity1 extends BaseActivity{
             interventionHeaderRow.addView(interventionHeading);
             interventionHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
             interventionTable.addView(interventionHeaderRow);
-            for(InterventionCategory intervention : driver1.interventions){
+            for(final InterventionCategory intervention : driver1.interventions){
                 TableRow interventionRow = new TableRow(this);
                 interventionRow.setLayoutParams(rowParams);
                 TextView problemIntervention = new TextView(this);
@@ -199,6 +201,7 @@ public class ActionPlanItemActivity1 extends BaseActivity{
                         intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
                         intent.putExtra("percentageDone", percentageDone);
                         intent.putExtra("actionRequired", actionRequired);
+                        intent.putExtra("selectedIntervention", intervention.serverId);
                         startActivity(intent);
                         finish();
                     }

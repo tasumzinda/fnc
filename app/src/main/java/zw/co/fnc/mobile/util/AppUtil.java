@@ -36,7 +36,7 @@ public class AppUtil {
     public static String OLD_SQL_DATE_FORMAT = "yyyy-MM-dd";
     //public static String APP_URL = "http://tracker.pzat.org:8080/tracker-mobile/rest/mobile/"; //PRO
 
-    public static String APP_URL = "http://192.168.43.66:8084/fnc/rest/static/"; //UAT
+    public static String APP_URL = "http://192.168.1.172:8084/fnc/rest/static/"; //UAT
     //public static String APP_URL = "http://tracker.pzat.org:8080/itech-mobile/rest/mobile/"; //UAT
     public static String LOGGED_IN = "LOGGED_IN";
     public static String USERNAME = "USERNAME";
