@@ -109,9 +109,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if(intervention != null){
-            for(InterventionCategory item : intervention){
-                Log.d("Intervention", AppUtil.createGson().toJson(item));
+        if(resourcesNeeded != null){
+            for(Long i : resourcesNeeded){
+                Log.d("Main", "ID: " + i);
             }
         }
     }

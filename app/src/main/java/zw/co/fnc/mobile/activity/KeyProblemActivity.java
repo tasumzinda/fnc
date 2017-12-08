@@ -131,6 +131,11 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(resourcesNeeded != null){
+            for(Long i : resourcesNeeded){
+                Log.d("Key", "ID: " + i);
+            }
+        }
     }
 
     private ArrayList<Indicator> getIndicators(){
@@ -206,6 +211,10 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
             intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
             intent.putExtra("percentageDone", percentageDone);
             intent.putExtra("actionRequired", actionRequired);
+            intent.putExtra("departmentCategories", departmentCategories);
+            intent.putExtra("resourcesNeeded", resourcesNeeded);
+            intent.putExtra("potentialChallenges", potentialChallenges);
+            intent.putExtra("strategyCategories", strategyCategories);
             driver.keyProblemCategory = (KeyProblemCategory) driverOfStunting.getSelectedItem();
             driver.interventions = getInterventions();
             driver.indicators = getIndicators();

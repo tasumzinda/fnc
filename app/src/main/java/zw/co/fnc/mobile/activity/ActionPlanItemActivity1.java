@@ -89,6 +89,11 @@ public class ActionPlanItemActivity1 extends BaseActivity{
         driver.indicators = selectedIndicators;
         driver.interventions = selectedInterventions;
         selectedDrivers.add(driver1);
+        if(resourcesNeeded != null){
+            for(Long i : resourcesNeeded){
+                Log.d("Action", "ID: " + i);
+            }
+        }
         init();
     }
 

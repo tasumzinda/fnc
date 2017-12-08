@@ -61,6 +61,11 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         actualDate = intent.getStringExtra("actualDateOfCompletion");
         percentage = intent.getStringExtra("percentageDone");
         resources = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
+        if(resources != null){
+            for(Long i : resources){
+                Log.d("Resource", "ID: " + i);
+            }
+        }
         strategyCategories = (ArrayList<Long>) intent.getSerializableExtra("strategyCategories");
         potentialChallenges = (ArrayList<Long>) intent.getSerializableExtra("potentialChallenges");
         departmentCategories = (ArrayList<Long>) intent.getSerializableExtra("departmentCategories");
@@ -158,11 +163,6 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         }
         setSupportActionBar(createToolBar("FNC Mobile::Create/ Edit Ward Intervention Action-Step 1"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if(intervention != null){
-            for(InterventionCategory item : intervention){
-                Log.d("Intervention", AppUtil.createGson().toJson(item));
-            }
-        }
 
     }
 
