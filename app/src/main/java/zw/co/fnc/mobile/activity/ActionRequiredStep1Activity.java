@@ -44,6 +44,7 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
     private String percentage;
     private ArrayList<Long> resources;
     private Long selectedIntervention;
+    private ArrayList<InterventionCategory> intervention;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +69,7 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         interventions = (ArrayList<InterventionCategory>) intent.getSerializableExtra("interventions");
         action =  intent.getLongExtra("actionRequired", 0L);
         selectedIntervention = intent.getLongExtra("selectedIntervention", 0L);
-        Log.d("Intervention", InterventionCategory.findByServerId(selectedIntervention).name);
+        //intervention = (ArrayList<InterventionCategory>) intent.getSerializableExtra("intervention");
         actionRequired = (Spinner) findViewById(R.id.action_required);
         expectedDateOfCompletion = (EditText) findViewById(R.id.exp_date_of_completion);
         actualDateOfCompletion = (EditText) findViewById(R.id.actual_date_of_completion);
@@ -157,6 +158,12 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         }
         setSupportActionBar(createToolBar("FNC Mobile::Create/ Edit Ward Intervention Action-Step 1"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(intervention != null){
+            for(InterventionCategory item : intervention){
+                Log.d("Intervention", AppUtil.createGson().toJson(item));
+            }
+        }
+
     }
 
     public void save(){
@@ -179,21 +186,29 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
             intent.putExtra("potentialChallenges", potentialChallenges);
             intent.putExtra("strategyCategories", strategyCategories);
             intent.putExtra("driver", driver);
+            intent.putExtra("selectedIntervention", selectedIntervention);
             ActionRequired action = new ActionRequired();
             action.actionCategory = (ActionCategory) actionRequired.getSelectedItem();
-            action.actualDateOfCompletion = DateUtil.getDateFromString(actualDateOfCompletion.getText().toString());
+            if(actualDate != null && ! actualDate.isEmpty()){
+                action.actualDateOfCompletion = DateUtil.getDateFromString(actualDateOfCompletion.getText().toString());
+            }
             action.expectedDateOfCompletion = DateUtil.getDateFromString(expectedDateOfCompletion.getText().toString());
-            action.percentageDone = Integer.parseInt(percentageDone.getText().toString());
-            action.resourceIds = getResourcesNeeded();
+            if(percentage != null && ! percentage.isEmpty()){
+                action.percentageDone = Integer.parseInt(percentageDone.getText().toString());
+            }
+            action.resourcesNeededCategorys = getResource();
             action.interventionCategory = InterventionCategory.findByServerId(selectedIntervention);
             action.keyProblem = driver;
             ArrayList<ActionRequired> list = new ArrayList<>();
             list.add(action);
+            ArrayList<InterventionCategory> items = new ArrayList<>();
             for(InterventionCategory m : interventions){
                 if(m.serverId.equals(selectedIntervention)){
                     m.actionRequireds = list;
                 }
+                items.add(m);
             }
+            intent.putExtra("intervention", items);
             startActivity(intent);
             finish();
         }
@@ -221,6 +236,18 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
                 a.add(resourcesNeededCategoryArrayAdapter.getItem(i).getId());
             }else{
                 a.remove(resourcesNeededCategoryArrayAdapter.getItem(i).getId());
+            }
+        }
+        return a;
+    }
+
+    private ArrayList<ResourcesNeededCategory> getResource(){
+        ArrayList<ResourcesNeededCategory> a = new ArrayList<>();
+        for(int i = 0; i < resourcesNeeded.getCount(); i++){
+            if(resourcesNeeded.isItemChecked(i)){
+                a.add(resourcesNeededCategoryArrayAdapter.getItem(i));
+            }else{
+                a.remove(resourcesNeededCategoryArrayAdapter.getItem(i));
             }
         }
         return a;
@@ -258,6 +285,28 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         intent.putExtra("actualDateOfCompletion", actualDateOfCompletion.getText().toString());
         intent.putExtra("percentageDone", percentageDone.getText().toString());
         intent.putExtra("actionRequired", ((ActionCategory) actionRequired.getSelectedItem()).getId());
+        ActionRequired action = new ActionRequired();
+        action.actionCategory = (ActionCategory) actionRequired.getSelectedItem();
+        if(actualDate != null && ! actualDate.isEmpty()){
+            action.actualDateOfCompletion = DateUtil.getDateFromString(actualDateOfCompletion.getText().toString());
+        }
+        action.expectedDateOfCompletion = DateUtil.getDateFromString(expectedDateOfCompletion.getText().toString());
+        if(percentage != null && ! percentage.isEmpty()){
+            action.percentageDone = Integer.parseInt(percentageDone.getText().toString());
+        }
+        action.resourcesNeededCategorys = getResource();
+        action.interventionCategory = InterventionCategory.findByServerId(selectedIntervention);
+        action.keyProblem = driver;
+        ArrayList<ActionRequired> list = new ArrayList<>();
+        list.add(action);
+        ArrayList<InterventionCategory> items = new ArrayList<>();
+        for(InterventionCategory m : interventions){
+            if(m.serverId.equals(selectedIntervention)){
+                m.actionRequireds = list;
+            }
+            items.add(m);
+        }
+        intent.putExtra("intervention", items);
         startActivity(intent);
         finish();
     }

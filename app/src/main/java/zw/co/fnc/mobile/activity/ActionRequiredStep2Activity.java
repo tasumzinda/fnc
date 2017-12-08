@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.*;
 import zw.co.fnc.mobile.R;
 import zw.co.fnc.mobile.business.domain.*;
+import zw.co.fnc.mobile.util.AppUtil;
+
 import java.util.ArrayList;
 
 public class ActionRequiredStep2Activity extends BaseActivity implements View.OnClickListener {
@@ -31,6 +33,8 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
     private ArrayList<Long> departments;
     private ArrayList<Long> strategyCategories;
     private ArrayList<Long> potentialChallenges;
+    private ArrayList<InterventionCategory> intervention;
+    private Long selectedIntervention;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +56,10 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
         actualDateOfCompletion = intent.getStringExtra("actualDateOfCompletion");
         percentageDone = intent.getStringExtra("percentageDone");
         actionRequired = intent.getLongExtra("actionRequired", 0L);
+        selectedIntervention = intent.getLongExtra("selectedIntervention", 0L);
         resourcesNeeded = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
         departments = (ArrayList<Long>) intent.getSerializableExtra("departmentCategories");
+        intervention = (ArrayList<InterventionCategory>) intent.getSerializableExtra("intervention");
         next = (Button) findViewById(R.id.btn_next);
         departmentCategory = (ListView) findViewById(R.id.department_category);
         departmentCategoryArrayAdapter = new ArrayAdapter<>(this, R.layout.check_box_item, DepartmentCategory.getAll());
@@ -86,6 +92,9 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
         }
         setSupportActionBar(createToolBar("FNC Mobile::Create/ Edit Ward Intervention Action-Step 2"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        for(InterventionCategory in : intervention){
+            Log.d("Intervention", in.name + " " + AppUtil.createGson().toJson(in));
+        }
     }
 
     public void save(){
@@ -108,6 +117,17 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
             intent.putExtra("driver", driver);
             intent.putExtra("strategyCategories", strategyCategories);
             intent.putExtra("potentialChallenges", potentialChallenges);
+            intent.putExtra("selectedIntervention", selectedIntervention);
+            ArrayList<InterventionCategory> items = new ArrayList<>();
+            for(InterventionCategory m : intervention){
+                if(m.serverId.equals(selectedIntervention)){
+                    for(ActionRequired a : m.actionRequireds){
+                        a.departmentCategorys = getDepartment();
+                    }
+                }
+                items.add(m);
+            }
+            intent.putExtra("intervention", items);
             startActivity(intent);
             finish();
         }
@@ -124,6 +144,18 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
                 a.add(departmentCategoryArrayAdapter.getItem(i).getId());
             }else{
                 a.remove(departmentCategoryArrayAdapter.getItem(i).getId());
+            }
+        }
+        return a;
+    }
+
+    private ArrayList<DepartmentCategory> getDepartment(){
+        ArrayList<DepartmentCategory> a = new ArrayList<>();
+        for(int i = 0; i < departmentCategory.getCount(); i++){
+            if(departmentCategory.isItemChecked(i)){
+                a.add(departmentCategoryArrayAdapter.getItem(i));
+            }else{
+                a.remove(departmentCategoryArrayAdapter.getItem(i));
             }
         }
         return a;
@@ -154,6 +186,16 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
         intent.putExtra("driver", driver);
         intent.putExtra("strategyCategories", strategyCategories);
         intent.putExtra("potentialChallenges", potentialChallenges);
+        ArrayList<InterventionCategory> items = new ArrayList<>();
+        for(InterventionCategory m : intervention){
+            if(m.serverId.equals(selectedIntervention)){
+                for(ActionRequired a : m.actionRequireds){
+                    a.departmentCategorys = getDepartment();
+                }
+            }
+            items.add(m);
+        }
+        intent.putExtra("intervention", items);
         startActivity(intent);
         finish();
     }

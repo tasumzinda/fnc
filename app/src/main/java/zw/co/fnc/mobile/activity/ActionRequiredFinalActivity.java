@@ -44,6 +44,8 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
     private KeyProblem driver1;
     private ArrayList<Long> strategyCategories;
     private ArrayList<Long> potentialChallenges;
+    private ArrayList<InterventionCategory> intervention;
+    private Long selectedIntervention;
 
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -65,6 +67,9 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
         actualDateOfCompletion = intent.getStringExtra("actualDateOfCompletion");
         percentageDone = intent.getStringExtra("percentageDone");
         actionRequired = intent.getLongExtra("actionRequired", 0L);
+        selectedIntervention = intent.getLongExtra("selectedIntervention", 0L);
+        Log.d("Selected", "ID: " + selectedIntervention);
+        intervention = (ArrayList<InterventionCategory>) intent.getSerializableExtra("intervention");
         resourcesNeeded = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
         departmentCategories = (ArrayList<Long>) intent.getSerializableExtra("departmentCategories");
         strategyCategories = (ArrayList<Long>) intent.getSerializableExtra("strategyCategories");
@@ -119,6 +124,9 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
         setSupportActionBar(createToolBar("FNC Mobile::Create/ Edit Ward Intervention - Final"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Log.d("microPlan", microPlan + " ");
+        for(InterventionCategory in : intervention){
+            Log.d("Intervention", in.name + " " + AppUtil.createGson().toJson(in));
+        }
         save.setOnClickListener(this);
     }
 
@@ -260,6 +268,30 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
         return a;
     }
 
+    private ArrayList<PotentialChallengesCategory> getPotentialChallengesCategories(){
+        ArrayList<PotentialChallengesCategory> a = new ArrayList<>();
+        for(int i = 0; i < challenges.getCount(); i++){
+            if(challenges.isItemChecked(i)){
+                a.add(potentialChallengesCategoryArrayAdapter.getItem(i));
+            }else{
+                a.remove(potentialChallengesCategoryArrayAdapter.getItem(i));
+            }
+        }
+        return a;
+    }
+
+    private ArrayList<StrategyCategory> getStrategyCategories(){
+        ArrayList<StrategyCategory> a = new ArrayList<>();
+        for(int i = 0; i < strategys.getCount(); i++){
+            if(strategys.isItemChecked(i)){
+                a.add(strategyCategoryArrayAdapter.getItem(i));
+            }else{
+                a.remove(strategyCategoryArrayAdapter.getItem(i));
+            }
+        }
+        return a;
+    }
+
     public void onBackPressed(){
         Intent intent = new Intent(ActionRequiredFinalActivity.this, ActionRequiredStep2Activity.class);
         intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion);
@@ -279,6 +311,19 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
         intent.putExtra("potentialChallenges", getPotentialChallenges());
         intent.putExtra("departmentCategories", departmentCategories);
         intent.putExtra("driver", driver1);
+        ArrayList<InterventionCategory> items = new ArrayList<>();
+        for(InterventionCategory m : intervention){
+            if(m.serverId.equals(selectedIntervention)){
+                for(ActionRequired a : m.actionRequireds){
+                    a.potentialChallengesCategorys = getPotentialChallengesCategories();
+                    a.strategyCategorys = getStrategyCategories();
+                    Log.d("Action", AppUtil.createGson().toJson(a));
+                }
+            }
+            items.add(m);
+            Log.d("Inter", AppUtil.createGson().toJson(m));
+        }
+        intent.putExtra("intervention", items);
         startActivity(intent);
         finish();
     }

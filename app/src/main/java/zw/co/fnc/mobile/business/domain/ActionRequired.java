@@ -57,6 +57,17 @@ public class ActionRequired extends Model implements Serializable{
 
     public List<Long> resourceIds;
 
+    @Expose
+    public List<DepartmentCategory> departmentCategorys;
+
+    public List<Long> departmentIds;
+
+    @Expose
+    public List<StrategyCategory> strategyCategorys;
+
+    @Expose
+    public List<PotentialChallengesCategory> potentialChallengesCategorys;
+
     public ActionRequired() {
         super();
     }

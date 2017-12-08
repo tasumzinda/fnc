@@ -43,6 +43,7 @@ public class ActionPlanItemActivity1 extends BaseActivity{
     private String percentageDone;
     private Long actionRequired;
     private Long driverId;
+    private ArrayList<InterventionCategory> intervention;
 
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
@@ -58,6 +59,7 @@ public class ActionPlanItemActivity1 extends BaseActivity{
         actualDateOfCompletion = intent.getStringExtra("actualDateOfCompletion");
         percentageDone = intent.getStringExtra("percentageDone");
         actionRequired = intent.getLongExtra("actionRequired", 0L);
+        intervention = (ArrayList<InterventionCategory>) intent.getSerializableExtra("intervention");
         strategyCategories = (ArrayList<Long>) intent.getSerializableExtra("strategyCategories");
         potentialChallenges = (ArrayList<Long>) intent.getSerializableExtra("potentialChallenges");
         resourcesNeeded = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
@@ -81,7 +83,6 @@ public class ActionPlanItemActivity1 extends BaseActivity{
             InterventionCategory inter = InterventionCategory.findById(interventions.get(i));
             selectedInterventions.add(inter);
         }*/
-        Log.d("Driver", "D: " + driver1.getId());
         selectedDrivers = new ArrayList<>();
         driver = new KeyProblem();
         driver.keyProblemCategory = (KeyProblemCategory.findById(driverOfStuntingCategory));
@@ -202,6 +203,7 @@ public class ActionPlanItemActivity1 extends BaseActivity{
                         intent.putExtra("percentageDone", percentageDone);
                         intent.putExtra("actionRequired", actionRequired);
                         intent.putExtra("selectedIntervention", intervention.serverId);
+                        intent.putExtra("intervention", intervention);
                         startActivity(intent);
                         finish();
                     }
@@ -236,6 +238,7 @@ public class ActionPlanItemActivity1 extends BaseActivity{
         intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
         intent.putExtra("percentageDone", percentageDone);
         intent.putExtra("actionRequired", actionRequired);
+        intent.putExtra("intervention", intervention);
         startActivity(intent);
         finish();
     }

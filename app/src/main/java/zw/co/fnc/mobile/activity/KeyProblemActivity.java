@@ -19,7 +19,7 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
 
     private Spinner driverOfStunting;
     private ListView indicator;
-    private ListView intervention;
+    private ListView interventionCategory;
     private Button save;
     ArrayAdapter<Indicator> indicatorArrayAdapter;
     ArrayAdapter<InterventionCategory> interventionCategoryArrayAdapter;
@@ -37,6 +37,7 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
     private String actualDateOfCompletion;
     private String percentageDone;
     private Long actionRequired;
+    private ArrayList<InterventionCategory> intervention;
 
     @Override
     public void onCreate(Bundle savedInstance){
@@ -44,20 +45,20 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
         setContentView(R.layout.driver_of_stunting);
         driverOfStunting = (Spinner) findViewById(R.id.driverOfStunting);
         indicator = (ListView) findViewById(R.id.indicator);
-        intervention = (ListView) findViewById(R.id.intervention);
+        interventionCategory = (ListView) findViewById(R.id.intervention);
         save = (Button) findViewById(R.id.btn_save);
         save.setOnClickListener(this);
         indicatorArrayAdapter = new ArrayAdapter<>(this, R.layout.check_box_item, Indicator.getAll());
         indicator.setAdapter(indicatorArrayAdapter);
         interventionCategoryArrayAdapter = new ArrayAdapter<>(this, R.layout.check_box_item, InterventionCategory.getAll());
-        intervention.setAdapter(interventionCategoryArrayAdapter);
+        interventionCategory.setAdapter(interventionCategoryArrayAdapter);
         ArrayAdapter<KeyProblemCategory> driverOfStuntingCategoryArrayAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, KeyProblemCategory.getAll());
         driverOfStuntingCategoryArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         driverOfStunting.setAdapter(driverOfStuntingCategoryArrayAdapter);
         indicator.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         indicator.setItemsCanFocus(false);
-        intervention.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        intervention.setItemsCanFocus(false);
+        interventionCategory.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        interventionCategory.setItemsCanFocus(false);
         Intent intent = getIntent();
         holder = (QuarterlyMicroPlan) intent.getSerializableExtra("plan");
         driver = (KeyProblem) intent.getSerializableExtra("driver");
@@ -69,6 +70,7 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
         actualDateOfCompletion = intent.getStringExtra("actualDateOfCompletion");
         percentageDone = intent.getStringExtra("percentageDone");
         actionRequired = intent.getLongExtra("actionRequired", 0L);
+        intervention = (ArrayList<InterventionCategory>) intent.getSerializableExtra("intervention");
         strategyCategories = (ArrayList<Long>) intent.getSerializableExtra("strategyCategories");
         potentialChallenges = (ArrayList<Long>) intent.getSerializableExtra("potentialChallenges");
         resourcesNeeded = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
@@ -78,7 +80,7 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 interventionCategoryArrayAdapter = new ArrayAdapter<>(adapterView.getContext(), R.layout.check_box_item, InterventionCategory.findByKeyProblemCategory((KeyProblemCategory) driverOfStunting.getSelectedItem()));
                 interventionCategoryArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                intervention.setAdapter(interventionCategoryArrayAdapter);
+                interventionCategory.setAdapter(interventionCategoryArrayAdapter);
                 interventionCategoryArrayAdapter.notifyDataSetChanged();
             }
 
@@ -117,7 +119,7 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
             for(i = 0; i < interventionCount; i++){
                 InterventionCategory current = interventionCategoryArrayAdapter.getItem(i);
                 if(list1.contains(current.name)){
-                    intervention.setItemChecked(i, true);
+                    interventionCategory.setItemChecked(i, true);
                 }
             }
             setSupportActionBar(createToolBar("FNC Mobile:: Create/Edit Driver Of Stunting For " + District.findById(district).name + " " + Ward.findById(ward).name + " " + Period.findById(period).name + " Action Plan"));
@@ -145,8 +147,8 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
 
     private ArrayList<InterventionCategory> getInterventions(){
         ArrayList<InterventionCategory> a = new ArrayList<>();
-        for(int i = 0; i < intervention.getCount(); i++){
-            if(intervention.isItemChecked(i)){
+        for(int i = 0; i < interventionCategory.getCount(); i++){
+            if(interventionCategory.isItemChecked(i)){
                 a.add(interventionCategoryArrayAdapter.getItem(i));
             }else{
                 a.remove(interventionCategoryArrayAdapter.getItem(i));
@@ -170,6 +172,7 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
         intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
         intent.putExtra("percentageDone", percentageDone);
         intent.putExtra("actionRequired", actionRequired);
+        intent.putExtra("intervention", intervention);
         startActivity(intent);
         finish();
     }
@@ -207,6 +210,7 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
             driver.interventions = getInterventions();
             driver.indicators = getIndicators();
             intent.putExtra("driver", driver);
+            intent.putExtra("intervention", intervention);
             startActivity(intent);
             finish();
         }

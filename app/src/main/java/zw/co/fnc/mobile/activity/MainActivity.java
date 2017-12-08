@@ -34,6 +34,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private ArrayList<Long> potentialChallenges;
     private ArrayList<Long> departmentCategories;
     private ArrayList<Long> resourcesNeeded;
+    private ArrayList<InterventionCategory> intervention;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         actualDateOfCompletion = intent.getStringExtra("actualDateOfCompletion");
         percentageDone = intent.getStringExtra("percentageDone");
         actionRequired = intent.getLongExtra("actionRequired", 0L);
+        intervention = (ArrayList<InterventionCategory>) intent.getSerializableExtra("intervention");
         resourcesNeeded = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
         departmentCategories = (ArrayList<Long>) intent.getSerializableExtra("departmentCategories");
         strategyCategories = (ArrayList<Long>) intent.getSerializableExtra("strategyCategories");
@@ -107,8 +109,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        for(KeyProblemIndicatorContract c : KeyProblemIndicatorContract.getAll()){
-            Log.d("Contract", AppUtil.createGson().toJson(c));
+        if(intervention != null){
+            for(InterventionCategory item : intervention){
+                Log.d("Intervention", AppUtil.createGson().toJson(item));
+            }
         }
     }
 
@@ -153,6 +157,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     intent.putExtra("strategyCategories", strategyCategories);
                     intent.putExtra("departmentCategories", departmentCategories);
                     intent.putExtra("resourcesNeeded", resourcesNeeded);
+                    intent.putExtra("intervention", intervention);
                     startActivity(intent);
                     finish();
                 }else{

@@ -7,6 +7,7 @@ import com.activeandroid.query.Select;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * Created by User on 3/7/2017.
  */
 @Table(name = "potential_challenges_category")
-public class PotentialChallengesCategory extends Model{
+public class PotentialChallengesCategory extends Model implements Serializable{
 
     @SerializedName("id")
     @Expose
