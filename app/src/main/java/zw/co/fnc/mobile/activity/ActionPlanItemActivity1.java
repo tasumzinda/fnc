@@ -44,10 +44,16 @@ public class ActionPlanItemActivity1 extends BaseActivity{
     private Long actionRequired;
     private Long driverId;
     private ArrayList<InterventionCategory> intervention;
+    TableRow.LayoutParams textParams;
+    TableLayout.LayoutParams rowParams;
+    LinearLayout.LayoutParams tableParams;
 
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
         setContentView(R.layout.action_plan_item);
+        textParams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+        rowParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+        tableParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         final Intent intent = getIntent();
         holder = (QuarterlyMicroPlan) intent.getSerializableExtra("plan");
         driver1 = (KeyProblem) intent.getSerializableExtra("driver");
@@ -84,16 +90,11 @@ public class ActionPlanItemActivity1 extends BaseActivity{
             selectedInterventions.add(inter);
         }*/
         selectedDrivers = new ArrayList<>();
-        driver = new KeyProblem();
+        /*driver = new KeyProblem();
         driver.keyProblemCategory = (KeyProblemCategory.findById(driverOfStuntingCategory));
         driver.indicators = selectedIndicators;
-        driver.interventions = selectedInterventions;
+        driver.interventions = selectedInterventions;*/
         selectedDrivers.add(driver1);
-        if(resourcesNeeded != null){
-            for(Long i : resourcesNeeded){
-                Log.d("Action", "ID: " + i);
-            }
-        }
         init();
     }
 
@@ -177,14 +178,14 @@ public class ActionPlanItemActivity1 extends BaseActivity{
             interventionHeaderRow.addView(interventionHeading);
             interventionHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
             interventionTable.addView(interventionHeaderRow);
-            for(final InterventionCategory intervention : driver1.interventions){
+            for(final InterventionCategory item : driver1.interventions){
                 TableRow interventionRow = new TableRow(this);
                 interventionRow.setLayoutParams(rowParams);
                 TextView problemIntervention = new TextView(this);
                 problemIntervention.setTextSize(16);
                 problemIntervention.setLayoutParams(textParams);
                 problemIntervention.setPadding(10, 10, 10, 5);
-                problemIntervention.setText(intervention.name);
+                problemIntervention.setText(item.name);
                 Button addAction = new Button(this);
                 addAction.setText("Add Action Required");
                 addAction.setOnClickListener(new View.OnClickListener() {
@@ -207,7 +208,7 @@ public class ActionPlanItemActivity1 extends BaseActivity{
                         intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
                         intent.putExtra("percentageDone", percentageDone);
                         intent.putExtra("actionRequired", actionRequired);
-                        intent.putExtra("selectedIntervention", intervention.serverId);
+                        intent.putExtra("selectedIntervention", item.serverId);
                         intent.putExtra("intervention", intervention);
                         startActivity(intent);
                         finish();

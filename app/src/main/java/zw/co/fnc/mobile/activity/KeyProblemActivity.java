@@ -126,16 +126,11 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
         }else{
             driver = new KeyProblem();
             QuarterlyMicroPlan m = QuarterlyMicroPlan.findById(microPlan);
-            Log.d("Plan", "ID:" + microPlan);
-            setSupportActionBar(createToolBar("FNC Mobile:: Create/Edit Driver Of Stunting For " + District.findById(district).name + " " + Ward.findById(ward).name + " " + Period.findById(period).name + " Action Plan"));
+            Log.d("Plan", AppUtil.createGson().toJson(m));
+            setSupportActionBar(createToolBar("FNC Mobile:: Create/Edit Driver Of Stunting For " + m.ward.district.name + " " + m.ward.name + " " + m.period.name + " Action Plan"));
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if(resourcesNeeded != null){
-            for(Long i : resourcesNeeded){
-                Log.d("Key", "ID: " + i);
-            }
-        }
     }
 
     private ArrayList<Indicator> getIndicators(){

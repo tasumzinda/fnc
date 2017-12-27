@@ -25,10 +25,12 @@ public class KeyProblem extends Model implements Serializable{
     @Column(name = "key_problem_category")
     public KeyProblemCategory keyProblemCategory;
 
+    @Expose
     public ArrayList<Indicator> indicators;
 
     public ArrayList<Long> indicatorsId;
 
+    @Expose
     public ArrayList<InterventionCategory> interventions;
 
     public ArrayList<Long> interventionsId;

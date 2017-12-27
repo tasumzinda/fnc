@@ -61,11 +61,6 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         actualDate = intent.getStringExtra("actualDateOfCompletion");
         percentage = intent.getStringExtra("percentageDone");
         resources = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
-        if(resources != null){
-            for(Long i : resources){
-                Log.d("Resource", "ID: " + i);
-            }
-        }
         strategyCategories = (ArrayList<Long>) intent.getSerializableExtra("strategyCategories");
         potentialChallenges = (ArrayList<Long>) intent.getSerializableExtra("potentialChallenges");
         departmentCategories = (ArrayList<Long>) intent.getSerializableExtra("departmentCategories");
@@ -74,7 +69,7 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         interventions = (ArrayList<InterventionCategory>) intent.getSerializableExtra("interventions");
         action =  intent.getLongExtra("actionRequired", 0L);
         selectedIntervention = intent.getLongExtra("selectedIntervention", 0L);
-        //intervention = (ArrayList<InterventionCategory>) intent.getSerializableExtra("intervention");
+        intervention = (ArrayList<InterventionCategory>) intent.getSerializableExtra("intervention");
         actionRequired = (Spinner) findViewById(R.id.action_required);
         expectedDateOfCompletion = (EditText) findViewById(R.id.exp_date_of_completion);
         actualDateOfCompletion = (EditText) findViewById(R.id.actual_date_of_completion);
@@ -163,7 +158,6 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         }
         setSupportActionBar(createToolBar("FNC Mobile::Create/ Edit Ward Intervention Action-Step 1"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
     }
 
     public void save(){
@@ -185,8 +179,8 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
             intent.putExtra("departmentCategories",departmentCategories);
             intent.putExtra("potentialChallenges", potentialChallenges);
             intent.putExtra("strategyCategories", strategyCategories);
-            intent.putExtra("driver", driver);
             intent.putExtra("selectedIntervention", selectedIntervention);
+            intent.putExtra("driver", driver);
             ActionRequired action = new ActionRequired();
             action.actionCategory = (ActionCategory) actionRequired.getSelectedItem();
             if(actualDate != null && ! actualDate.isEmpty()){
