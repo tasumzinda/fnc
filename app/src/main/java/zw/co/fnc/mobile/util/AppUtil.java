@@ -169,6 +169,12 @@ public class AppUtil {
                 .build();
     }
 
+    public static HttpUrl getDownloadMotherChildsUrl(Context context, Long ward){
+        return HttpUrl.parse(getWebService(context).concat("csv/download")).newBuilder()
+                .setQueryParameter("ward", String.valueOf(ward))
+                .build();
+    }
+
     public static HttpUrl getActionRequiredUrl(Context context, Long keyProblem){
         return HttpUrl.parse(getWebService(context).concat("form/get-action-required")).newBuilder()
                 .setQueryParameter("keyProblem", String.valueOf(keyProblem))

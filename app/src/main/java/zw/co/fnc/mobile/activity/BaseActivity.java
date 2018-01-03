@@ -74,37 +74,6 @@ public class BaseActivity extends AppCompatActivity {
             return true;
         }
 
-        /*if (id == R.id.action_home) {
-            intent = new Intent(context, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-            return true;
-        }
-
-        if (id == R.id.action_infor) {
-            AppUtil.getAppDialog(context);
-            return true;
-        }
-
-        if (id == R.id.action_logout) {
-            new AlertDialog.Builder(context)
-                    .setMessage("Are you sure you want to exit?")
-                    .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            AppUtil.loginReset(context);
-                            Intent out = new Intent(context, StartActivity.class);
-                            out.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(out);
-                            finish();
-                        }
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
-            return true;
-        }*/
-
         if (id == R.id.action_exit) {
             new AlertDialog.Builder(context)
                     .setMessage("Are you sure you want to exit?")
@@ -124,9 +93,9 @@ public class BaseActivity extends AppCompatActivity {
             if(checker.lacksPermissions(PERMISSIONS_READ_STORAGE)){
                 startPermissionsActivity(PERMISSIONS_READ_STORAGE);
             }else{
-                //intent = new Intent(context, FileDownloadActivity.class);
-                //startActivity(intent);
-                download();
+                intent = new Intent(context, DownloadCSVActivity.class);
+                startActivity(intent);
+                //download();
             }
             return true;
         }
