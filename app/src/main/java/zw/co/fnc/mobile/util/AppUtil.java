@@ -9,6 +9,8 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.*;
@@ -36,7 +38,7 @@ public class AppUtil {
     public static String OLD_SQL_DATE_FORMAT = "yyyy-MM-dd";
     //public static String APP_URL = "http://tracker.pzat.org:8080/tracker-mobile/rest/mobile/"; //PRO
 
-    public static String APP_URL = "http://192.168.1.172:8084/fnc/rest/static/"; //UAT
+    public static String APP_URL = "http://192.168.1.172:8084/fnc-mobile/rest/mobile/"; //UAT
     //public static String APP_URL = "http://tracker.pzat.org:8080/itech-mobile/rest/mobile/"; //UAT
     public static String LOGGED_IN = "LOGGED_IN";
     public static String USERNAME = "USERNAME";
@@ -47,6 +49,32 @@ public class AppUtil {
     public static String RESOLVED = "Resolved";
     public static String MENTOR_ROLE = "NATIONAL";
     private static Gson gson;
+    private static AppUtil appInstance;
+    private static Context mContext;
+    private RequestQueue requestQueue;
+
+    private AppUtil(Context context) {
+        mContext = context;
+        requestQueue = getRequestQueue();
+    }
+
+    public static synchronized AppUtil getInstance(Context context) {
+        if (appInstance == null) {
+            appInstance = new AppUtil(context);
+        }
+        return appInstance;
+    }
+
+    public RequestQueue getRequestQueue() {
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(mContext);
+        }
+        return requestQueue;
+    }
+
+    public <T> void addToRequestQueue(com.android.volley.Request<T> request) {
+        getRequestQueue().add(request);
+    }
 
     public static Gson createGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -58,52 +86,93 @@ public class AppUtil {
         return gson;
     }
 
+    public static HttpUrl getLoginUrl(Context context) {
+        return HttpUrl.parse(getWebService(context).concat("login/get-user"));
+    }
+
     public static HttpUrl getProvinceUrl(Context context) {
-        return HttpUrl.parse(getWebService(context).concat("province"));
+        return HttpUrl.parse(getWebService(context).concat("static/province"));
     }
 
     public static HttpUrl getDistrictUrl(Context context) {
-        return HttpUrl.parse(getWebService(context).concat("district"));
+        return HttpUrl.parse(getWebService(context).concat("static/district"));
     }
 
     public static HttpUrl getWardUrl(Context context) {
-        return HttpUrl.parse(getWebService(context).concat("ward"));
+        return HttpUrl.parse(getWebService(context).concat("static/ward"));
     }
 
     public static HttpUrl getActionCategoryUrl(Context context) {
-        return HttpUrl.parse(getWebService(context).concat("action-category"));
+        return HttpUrl.parse(getWebService(context).concat("static/action-category"));
     }
 
     public static HttpUrl getDepartmentCategoryUrl(Context context) {
-        return HttpUrl.parse(getWebService(context).concat("department-category"));
+        return HttpUrl.parse(getWebService(context).concat("static/department-category"));
     }
 
     public static HttpUrl getIndicatorUrl(Context context) {
-        return HttpUrl.parse(getWebService(context).concat("indicator"));
+        return HttpUrl.parse(getWebService(context).concat("static/indicator"));
     }
 
     public static HttpUrl getPeriodUrl(Context context) {
-        return HttpUrl.parse(getWebService(context).concat("period"));
+        return HttpUrl.parse(getWebService(context).concat("static/period"));
     }
 
     public static HttpUrl getKeyProblemCategoryUrl(Context context) {
-        return HttpUrl.parse(getWebService(context).concat("key-problem-category"));
+        return HttpUrl.parse(getWebService(context).concat("static/key-problem-category"));
     }
 
     public static HttpUrl getInterventionCategoryUrl(Context context) {
-        return HttpUrl.parse(getWebService(context).concat("intervention-category"));
+        return HttpUrl.parse(getWebService(context).concat("static/intervention-category"));
     }
 
     public static HttpUrl getPotentialChallengesCategoryUrl(Context context) {
-        return HttpUrl.parse(getWebService(context).concat("potential-challenges-category"));
+        return HttpUrl.parse(getWebService(context).concat("static/potential-challenges-category"));
     }
 
     public static HttpUrl getResourcesNeededCategoryUrl(Context context) {
-        return HttpUrl.parse(getWebService(context).concat("resources-needed-category"));
+        return HttpUrl.parse(getWebService(context).concat("static/resources-needed-category"));
     }
 
     public static HttpUrl getStrategyCategoryUrl(Context context) {
-        return HttpUrl.parse(getWebService(context).concat("strategy-category"));
+        return HttpUrl.parse(getWebService(context).concat("static/strategy-category"));
+    }
+
+    public static HttpUrl getPushPlanUrl(Context context, Long id){
+        return HttpUrl.parse(getWebService(context).concat("form/action-plan")).newBuilder()
+                .setQueryParameter("id", String.valueOf(id))
+                .build();
+    }
+
+    public static HttpUrl getPushKeyProblemUrl(Context context, Long id){
+        return HttpUrl.parse(getWebService(context).concat("form/key-problem")).newBuilder()
+                .setQueryParameter("id", String.valueOf(id))
+                .build();
+    }
+
+    public static HttpUrl getPushActionRequiredUrl(Context context, Long id){
+        return HttpUrl.parse(getWebService(context).concat("form/action-required")).newBuilder()
+                .setQueryParameter("id", String.valueOf(id))
+                .build();
+    }
+
+    public static HttpUrl getDownloadActionPlanUrl(Context context, Long period, Long ward){
+        return HttpUrl.parse(getWebService(context).concat("form/get-plan")).newBuilder()
+                .setQueryParameter("period", String.valueOf(period))
+                .setQueryParameter("ward", String.valueOf(ward))
+                .build();
+    }
+
+    public static HttpUrl getDownloadKeyProblemsUrl(Context context, Long plan){
+        return HttpUrl.parse(getWebService(context).concat("form/get-key-problem")).newBuilder()
+                .setQueryParameter("plan", String.valueOf(plan))
+                .build();
+    }
+
+    public static HttpUrl getActionRequiredUrl(Context context, Long keyProblem){
+        return HttpUrl.parse(getWebService(context).concat("form/get-action-required")).newBuilder()
+                .setQueryParameter("keyProblem", String.valueOf(keyProblem))
+                .build();
     }
 
     public static String getWebService(Context context) {
@@ -192,7 +261,8 @@ public class AppUtil {
         client.setAuthenticator(new Authenticator() {
             @Override
             public Request authenticate(Proxy proxy, Response response) {
-                String credential = Credentials.basic(AppUtil.getUsername(context), AppUtil.getPassword(context));
+                //String credential = Credentials.basic(AppUtil.getUsername(context), AppUtil.getPassword(context));
+                String credential = Credentials.basic("jmuzinda@gmail.com", "16-JudgE@84");
                 return response.request().newBuilder()
                         .header("Authorization", credential)
                         .build();

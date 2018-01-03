@@ -122,7 +122,7 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
             for(InterventionCategory m : intervention){
                 if(m.serverId.equals(selectedIntervention)){
                     for(ActionRequired a : m.actionRequireds){
-                        a.departmentCategorys = getDepartment();
+                        a.departments = getDepartment();
                     }
                 }
                 items.add(m);
@@ -134,6 +134,10 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
     }
     public boolean validate(){
         boolean isValid = true;
+        if(getDepartment().isEmpty()){
+            AppUtil.createShortNotification(this, "Please select department category");
+            isValid = false;
+        }
         return isValid;
     }
 
@@ -190,7 +194,7 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
         for(InterventionCategory m : intervention){
             if(m.serverId.equals(selectedIntervention)){
                 for(ActionRequired a : m.actionRequireds){
-                    a.departmentCategorys = getDepartment();
+                    a.departments = getDepartment();
                 }
             }
             items.add(m);

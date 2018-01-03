@@ -35,11 +35,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private ArrayList<Long> departmentCategories;
     private ArrayList<Long> resourcesNeeded;
     private ArrayList<InterventionCategory> intervention;
+    ArrayAdapter<Province> provinceArrayAdapter;
+    ArrayAdapter<District> districtArrayAdapter;
+    ArrayAdapter<Ward> wardArrayAdapter;
+    ArrayAdapter<Period> periodArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if(savedInstanceState == null){
+            syncAppData();
+        }
         Intent intent = getIntent();
         holder = (QuarterlyMicroPlan) intent.getSerializableExtra("plan");
         driver = (KeyProblem) intent.getSerializableExtra("driver");
@@ -58,13 +65,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         period = (Spinner) findViewById(R.id.period);
         search = (Button) findViewById(R.id.btn_search);
         search.setOnClickListener(this);
-        ArrayAdapter<Province> provinceArrayAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, Province.getAll());
+        provinceArrayAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, Province.getAll());
         provinceArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         province.setAdapter(provinceArrayAdapter);
         province.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                ArrayAdapter<District> districtArrayAdapter = new ArrayAdapter<>(adapterView.getContext(), R.layout.simple_spinner_item, District.getByProvince((Province) province.getSelectedItem()));
+                districtArrayAdapter = new ArrayAdapter<>(adapterView.getContext(), R.layout.simple_spinner_item, District.getByProvince((Province) province.getSelectedItem()));
                 districtArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 district.setAdapter(districtArrayAdapter);
                 districtArrayAdapter.notifyDataSetChanged();
@@ -78,7 +85,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         district.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                ArrayAdapter<Ward> wardArrayAdapter = new ArrayAdapter<>(adapterView.getContext(), R.layout.simple_spinner_item, Ward.getByDistrict((District) district.getSelectedItem()));
+                wardArrayAdapter = new ArrayAdapter<>(adapterView.getContext(), R.layout.simple_spinner_item, Ward.getByDistrict((District) district.getSelectedItem()));
                 wardArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 ward.setAdapter(wardArrayAdapter);
                 wardArrayAdapter.notifyDataSetChanged();
@@ -89,7 +96,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
             }
         });
-        ArrayAdapter<Period> periodArrayAdapter = new ArrayAdapter<Period>(this, R.layout.simple_spinner_item, Period.getAll());
+        periodArrayAdapter = new ArrayAdapter<Period>(this, R.layout.simple_spinner_item, Period.getAll());
         periodArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         period.setAdapter(periodArrayAdapter);
         if(holder != null){
@@ -132,6 +139,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             default:
                 return super.onOptionsItemSelected(menuItem);
         }
+    }
+
+    @Override
+    public void updateView(){
+        provinceArrayAdapter.clear();
+        provinceArrayAdapter.addAll(Province.getAll());
+        provinceArrayAdapter.notifyDataSetChanged();
+        periodArrayAdapter.clear();
+        periodArrayAdapter.addAll(Period.getAll());
+        periodArrayAdapter.notifyDataSetChanged();
     }
 
     @Override

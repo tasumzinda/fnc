@@ -6,9 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import com.squareup.okhttp.HttpUrl;
+import com.squareup.okhttp.OkHttpClient;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import zw.co.fnc.mobile.business.domain.*;
 import zw.co.fnc.mobile.util.AppUtil;
+import zw.co.fnc.mobile.util.DateUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,8 +32,8 @@ public class PullService extends IntentService {
 
     public void onHandleIntent(Intent intent){
         int result = Activity.RESULT_OK;
-        for(HttpUrl url : getHttpUrls()){
-            try{
+        try{
+            for(HttpUrl url : getHttpUrls()){
                 if(url.equals(AppUtil.getProvinceUrl(context))){
                     loadProvinces(AppUtil.run(url, this));
                 }
@@ -67,11 +70,82 @@ public class PullService extends IntentService {
                 if(url.equals(AppUtil.getStrategyCategoryUrl(context))){
                     loadStrategyCategories(AppUtil.run(url, this));
                 }
-            }catch (IOException ex){
-                ex.printStackTrace();
-                result = Activity.RESULT_CANCELED;
             }
+            for(QuarterlyMicroPlan item : QuarterlyMicroPlan.findByPushed()){
+                QuarterlyMicroPlan res = save(run(AppUtil.getPushPlanUrl(context, item.serverId), item), item);
+                Log.d("PlanRes", AppUtil.createGson().toJson(res));
+                for(KeyProblem problem : KeyProblem.findByMicroPlan(item)){
+                    problem.quarterlyMicroPlan = res;
+                    problem.save();
+                    problem.indicators = Indicator.findByKeyProblem(problem);
+                    problem.interventions = InterventionCategory.findByKeyProblem(problem);
+                    KeyProblem prob = save(run(AppUtil.getPushKeyProblemUrl(context, problem.serverId), problem), problem);
+                    Log.d("ProblemRes", AppUtil.createGson().toJson(prob));
+                    List<InterventionCategory> list = InterventionCategory.findByKeyProblem(problem);
+                    List<InterventionCategory> interventionCategories = new ArrayList<>();
+                    for(InterventionCategory intervention : list){
+                        List<ActionRequired> actionRequireds = ActionRequired.findByKeyProblemAndInterventionCategory(problem, intervention);
+                        List<ActionRequired> actionRequiredList = new ArrayList<>();
+                        for(ActionRequired actionRequired : actionRequireds){
+                            actionRequired.keyProblem = problem;
+                            actionRequired.resourcesNeededCategorys = ResourcesNeededCategory.findByActionRequired(actionRequired);
+                            actionRequired.potentialChallengesCategorys = PotentialChallengesCategory.findByActionRequired(actionRequired);
+                            actionRequired.strategyCategorys = StrategyCategory.findByActionRequired(actionRequired);
+                            actionRequired.departments = DepartmentCategory.findByActionRequired(actionRequired);
+                            actionRequiredList.add(actionRequired);
+                            ActionRequired action = save(run(AppUtil.getPushActionRequiredUrl(context, actionRequired.serverId), actionRequired), actionRequired);
+                            Log.d("Action", AppUtil.createGson().toJson(action));
+                            if(action != null){
+                                for(ActionRequiredPotentialChallengesCategoryContract m : ActionRequiredPotentialChallengesCategoryContract.findByActionRequired(actionRequired)){
+                                    m.delete();
+                                    Log.d("Deleted challenge", m.potentialChallengesCategory.name);
+                                }
 
+                                for(ActionRequiredDepartmentCategoryContract m : ActionRequiredDepartmentCategoryContract.findByActionRequired(actionRequired)){
+                                    m.delete();
+                                    Log.d("Deleted department", m.departmentCategory.name);
+                                }
+
+                                for(ActionRequiredResourcesNeededContract m : ActionRequiredResourcesNeededContract.findByActionRequired(actionRequired)){
+                                    m.delete();
+                                    Log.d("Deleted resource", m.resourcesNeededCategory.name);
+                                }
+
+                                for(ActionRequiredStrategyCategoryContract m : ActionRequiredStrategyCategoryContract.findByActionRequired(actionRequired)){
+                                    m.delete();
+                                    Log.d("Deleted challenge", m.strategyCategory.name);
+                                }
+                                actionRequired.delete();
+                                action.delete();
+                                Log.d("Deleted action", action.actionCategory.name);
+                            }
+                        }
+                    }
+                    if(prob != null){
+                        for(KeyProblemIndicatorContract m : KeyProblemIndicatorContract.findByKeyProblem(problem)){
+                            m.delete();
+                            Log.d("Deleted indicator", m.indicator.name);
+                        }
+
+                        for(KeyProblemInterventionCategoryContract m : KeyProblemInterventionCategoryContract.findByKeyProblem(problem)){
+                            m.delete();
+                            Log.d("Deleted indicator", m.interventionCategory.name);
+                        }
+                        problem.delete();
+                        prob.delete();
+                        Log.d("Deleted problem", prob.keyProblemCategory.name);
+                    }
+
+                }
+                if(res != null){
+                    item.delete();
+                    res.delete();
+                    Log.d("Deleted plan", item.serverId + "");
+                }
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+            result = Activity.RESULT_CANCELED;
         }
         publishResults(result);
     }
@@ -111,7 +185,6 @@ public class PullService extends IntentService {
                     item.serverId = staticData.serverId;
                     item.name = staticData.name;
                     item.save();
-                    Log.d("Saved province", staticData.name);
                 }
             }
 
@@ -129,10 +202,8 @@ public class PullService extends IntentService {
             List<District> list = District.fromJSON(jsonArray);
             for (District district : list) {
                 District checkDuplicate = District.findByServerId(district.serverId);
-                Log.d("District", AppUtil.createGson().toJson(district));
                 if (checkDuplicate == null) {
                     district.save();
-                    Log.d("Saved district", district.name);
                 }
             }
 
@@ -144,6 +215,7 @@ public class PullService extends IntentService {
     }
 
     private String loadWards(String data) {
+        Log.d("Wards", "Test" + data);
         String msg = "Ward";
         try {
             JSONArray jsonArray = new JSONArray(data);
@@ -152,7 +224,6 @@ public class PullService extends IntentService {
                 Ward checkDuplicate = Ward.findByServerId(ward.serverId);
                 if (checkDuplicate == null) {
                     ward.save();
-                    Log.d("Saved ward", ward.name);
                 }
             }
 
@@ -175,7 +246,6 @@ public class PullService extends IntentService {
                     item.serverId = staticData.serverId;
                     item.name = staticData.name;
                     item.save();
-                    Log.d("Saved period", staticData.name);
                 }
             }
 
@@ -198,7 +268,6 @@ public class PullService extends IntentService {
                     item.serverId = staticData.serverId;
                     item.name = staticData.name;
                     item.save();
-                    Log.d("Saved action category", staticData.name);
                 }
             }
 
@@ -221,7 +290,6 @@ public class PullService extends IntentService {
                     item.serverId = staticData.serverId;
                     item.name = staticData.name;
                     item.save();
-                    Log.d("Saved departcategory", staticData.name);
                 }
             }
 
@@ -244,7 +312,6 @@ public class PullService extends IntentService {
                     item.serverId = staticData.serverId;
                     item.name = staticData.name;
                     item.save();
-                    Log.d("Saved indicator", staticData.name);
                 }
             }
 
@@ -267,7 +334,6 @@ public class PullService extends IntentService {
                     item.serverId = staticData.serverId;
                     item.name = staticData.name;
                     item.save();
-                    Log.d("Saved key problem", staticData.name);
                 }
             }
 
@@ -283,12 +349,10 @@ public class PullService extends IntentService {
         try {
             JSONArray jsonArray = new JSONArray(data);
             List<InterventionCategory> list = InterventionCategory.fromJSON(jsonArray);
-            for (InterventionCategory item : list) {
-                Log.d("Intervention", AppUtil.createGson().toJson(item));
+            for (InterventionCategory item : list) {                Log.d("Intervention", AppUtil.createGson().toJson(item));
                 InterventionCategory checkDuplicate = InterventionCategory.findByServerId(item.serverId);
                 if (checkDuplicate == null) {
                     item.save();
-                    Log.d("Saved intervention", item.name);
                 }
             }
 
@@ -311,7 +375,6 @@ public class PullService extends IntentService {
                     item.serverId = staticData.serverId;
                     item.name = staticData.name;
                     item.save();
-                    Log.d("Saved challenge", staticData.name);
                 }
             }
 
@@ -334,7 +397,6 @@ public class PullService extends IntentService {
                     item.serverId = staticData.serverId;
                     item.name = staticData.name;
                     item.save();
-                    Log.d("Saved resource", staticData.name);
                 }
             }
 
@@ -357,7 +419,6 @@ public class PullService extends IntentService {
                     item.serverId = staticData.serverId;
                     item.name = staticData.name;
                     item.save();
-                    Log.d("Saved strategy", staticData.name);
                 }
             }
 
@@ -367,4 +428,102 @@ public class PullService extends IntentService {
         }
         return msg;
     }
+
+    private String run(HttpUrl httpUrl, QuarterlyMicroPlan form) {
+        OkHttpClient client = new OkHttpClient();
+        client = AppUtil.connectionSettings(client);
+        client = AppUtil.getUnsafeOkHttpClient(client);
+        client = AppUtil.createAuthenticationData(client, context);
+        String json =  AppUtil.createGson().toJson(form);
+        return AppUtil.getResponeBody(client, httpUrl, json);
+    }
+
+    public QuarterlyMicroPlan save(String data, QuarterlyMicroPlan item){
+        Log.d("Result", data);
+        try{
+            Long id = Long.parseLong(data);
+            item.serverId = id;
+            item.pushed = 0;
+            item.save();
+            Log.d("Saved plan", AppUtil.createGson().toJson(item));
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+        return item;
+    }
+
+    private String run(HttpUrl httpUrl, KeyProblem form) {
+        OkHttpClient client = new OkHttpClient();
+        client = AppUtil.connectionSettings(client);
+        client = AppUtil.getUnsafeOkHttpClient(client);
+        client = AppUtil.createAuthenticationData(client, context);
+        String json =  AppUtil.createGson().toJson(form);
+        return AppUtil.getResponeBody(client, httpUrl, json);
+    }
+
+    public KeyProblem save(String data, KeyProblem item){
+        Log.d("Key", data);
+        try{
+            Long id = Long.parseLong(data);
+            item.serverId = id;
+            item.save();
+            Log.d("Saved problem", AppUtil.createGson().toJson(item));
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+        return item;
+    }
+
+    private String run(HttpUrl httpUrl, ActionRequired form) {
+        OkHttpClient client = new OkHttpClient();
+        client = AppUtil.connectionSettings(client);
+        client = AppUtil.getUnsafeOkHttpClient(client);
+        client = AppUtil.createAuthenticationData(client, context);
+        if(form.actualDateOfCompletion != null){
+            form.actualDate = DateUtil.formatDateRest(form.actualDateOfCompletion);
+        }
+        if(form.expectedDateOfCompletion != null){
+            form.expectedDate = DateUtil.formatDateRest(form.expectedDateOfCompletion);
+        }
+        String json =  AppUtil.createGson().toJson(form);
+        return AppUtil.getResponeBody(client, httpUrl, json);
+    }
+
+    public ActionRequired save(String data, ActionRequired item){
+        Log.d("Action", data);
+        try{
+            Long id = Long.parseLong(data);
+            item.serverId = id;
+            item.save();
+            Log.d("Saved action", AppUtil.createGson().toJson(item));
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+        return item;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

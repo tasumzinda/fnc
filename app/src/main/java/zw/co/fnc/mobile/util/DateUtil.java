@@ -31,6 +31,10 @@ public class DateUtil {
         return fmt.format(date);
     }
 
+    public static String formatDateRest(Date date) {
+        return restFmt.format(date);
+    }
+
     public static Date getDateFromString(String date) {
         try {
             Date d = restFmt.parse(date);

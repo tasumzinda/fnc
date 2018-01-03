@@ -143,7 +143,10 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
             if(actualDate != null && ! actualDate.isEmpty()){
                 updateLabel(DateUtil.getDateFromString(actualDate), actualDateOfCompletion);
             }
-            updateLabel(DateUtil.getDateFromString(expectedDate), expectedDateOfCompletion);
+            if(expectedDate != null && ! expectedDate.isEmpty()){
+                updateLabel(DateUtil.getDateFromString(expectedDate), expectedDateOfCompletion);
+            }
+
             if(percentage != null){
                 percentageDone.setText(percentage);
             }
@@ -158,6 +161,9 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         }
         setSupportActionBar(createToolBar("FNC Mobile::Create/ Edit Ward Intervention Action-Step 1"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(intervention != null){
+            Log.d("Data", AppUtil.createGson().toJson(intervention));
+        }
     }
 
     public void save(){
@@ -183,12 +189,14 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
             intent.putExtra("driver", driver);
             ActionRequired action = new ActionRequired();
             action.actionCategory = (ActionCategory) actionRequired.getSelectedItem();
-            if(actualDate != null && ! actualDate.isEmpty()){
+            if(! actualDateOfCompletion.getText().toString().isEmpty()){
                 action.actualDateOfCompletion = DateUtil.getDateFromString(actualDateOfCompletion.getText().toString());
             }
-            action.expectedDateOfCompletion = DateUtil.getDateFromString(expectedDateOfCompletion.getText().toString());
-            if(percentage != null && ! percentage.isEmpty()){
-                action.percentageDone = Integer.parseInt(percentageDone.getText().toString());
+            if( ! expectedDateOfCompletion.getText().toString().isEmpty()){
+                action.expectedDateOfCompletion = DateUtil.getDateFromString(expectedDateOfCompletion.getText().toString());
+            }
+             if(! percentageDone.getText().toString().isEmpty()){
+                action.percentageDone = Integer.parseInt(percentageDone.getText().toString().trim());
             }
             action.resourcesNeededCategorys = getResource();
             action.interventionCategory = InterventionCategory.findByServerId(selectedIntervention);
@@ -196,11 +204,16 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
             ArrayList<ActionRequired> list = new ArrayList<>();
             list.add(action);
             ArrayList<InterventionCategory> items = new ArrayList<>();
-            for(InterventionCategory m : interventions){
+            for(InterventionCategory m : intervention){
                 if(m.serverId.equals(selectedIntervention)){
                     m.actionRequireds = list;
                 }
                 items.add(m);
+                if(intervention != null){
+                    for(InterventionCategory i : items){
+                        Log.d("Data", AppUtil.createGson().toJson(i));
+                    }
+                }
             }
             intent.putExtra("intervention", items);
             startActivity(intent);
@@ -218,6 +231,10 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
 
         if(actionRequired.getSelectedItem() == null){
             AppUtil.createShortNotification(this, "Please select action required");
+            isValid = false;
+        }
+        if(getResource().isEmpty()){
+            AppUtil.createShortNotification(this, "Please select ressources needed");
             isValid = false;
         }
         return isValid;
@@ -277,16 +294,18 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         intent.putExtra("strategyCategories", strategyCategories);
         intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion.getText().toString());
         intent.putExtra("actualDateOfCompletion", actualDateOfCompletion.getText().toString());
-        intent.putExtra("percentageDone", percentageDone.getText().toString());
+        intent.putExtra("percentageDone", percentageDone.getText().toString().trim());
         intent.putExtra("actionRequired", ((ActionCategory) actionRequired.getSelectedItem()).getId());
         ActionRequired action = new ActionRequired();
         action.actionCategory = (ActionCategory) actionRequired.getSelectedItem();
-        if(actualDate != null && ! actualDate.isEmpty()){
+        if(! actualDateOfCompletion.getText().toString().isEmpty()){
             action.actualDateOfCompletion = DateUtil.getDateFromString(actualDateOfCompletion.getText().toString());
         }
-        action.expectedDateOfCompletion = DateUtil.getDateFromString(expectedDateOfCompletion.getText().toString());
-        if(percentage != null && ! percentage.isEmpty()){
-            action.percentageDone = Integer.parseInt(percentageDone.getText().toString());
+        if( ! expectedDateOfCompletion.getText().toString().isEmpty()){
+            action.expectedDateOfCompletion = DateUtil.getDateFromString(expectedDateOfCompletion.getText().toString());
+        }
+        if(! percentageDone.getText().toString().isEmpty()){
+            action.percentageDone = Integer.parseInt(percentageDone.getText().toString().trim());
         }
         action.resourcesNeededCategorys = getResource();
         action.interventionCategory = InterventionCategory.findByServerId(selectedIntervention);

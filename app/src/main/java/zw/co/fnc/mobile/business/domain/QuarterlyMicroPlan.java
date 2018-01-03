@@ -6,6 +6,8 @@ import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import org.json.JSONException;
+import org.json.JSONObject;
 import zw.co.fnc.mobile.business.domain.util.ActionPlanMonth;
 
 import java.io.Serializable;
@@ -18,6 +20,11 @@ import java.util.List;
 @Table(name = "quarterly_micro_plan")
 public class QuarterlyMicroPlan extends Model implements Serializable{
 
+    @SerializedName("id")
+    @Expose
+    @Column
+    public Long serverId;
+
     @Expose
     @Column(name = "period")
     public Period period;
@@ -26,27 +33,11 @@ public class QuarterlyMicroPlan extends Model implements Serializable{
     @Column(name = "ward")
     public Ward ward;
 
-    @Expose
-    @Column(name = "action_plan_month")
-    public ActionPlanMonth actionPlanMonth;
-
-    @Expose
-    public Province province;
-
-    @Expose
     public District district;
-
-    @Expose
-    public Boolean actionPlanDone = Boolean.FALSE;
-
-    @Expose
     public List<KeyProblem> keyProblems;
 
-    @Expose
-    public Boolean completed = Boolean.FALSE;
-
-    @Expose
-    public String name;
+    @Column
+    public Integer pushed = 0;
 
     public QuarterlyMicroPlan(){
         super();
@@ -65,10 +56,50 @@ public class QuarterlyMicroPlan extends Model implements Serializable{
                 .executeSingle();
     }
 
+    public static List<QuarterlyMicroPlan> findByPushed(){
+        return new Select()
+                .from(QuarterlyMicroPlan.class)
+                .where("pushed = ?", 1)
+                .execute();
+    }
+
     public static QuarterlyMicroPlan findById(Long id){
         return new Select()
                 .from(QuarterlyMicroPlan.class)
                 .where("Id = ?", id)
                 .executeSingle();
+    }
+
+    public static QuarterlyMicroPlan findByServerId(Long id){
+        return new Select()
+                .from(QuarterlyMicroPlan.class)
+                .where("serverId = ?", id)
+                .executeSingle();
+    }
+
+    public static List<QuarterlyMicroPlan> getAll(){
+        return new Select()
+                .from(QuarterlyMicroPlan.class)
+                .execute();
+    }
+
+    public static QuarterlyMicroPlan fromJSON(JSONObject object){
+        QuarterlyMicroPlan item = new QuarterlyMicroPlan();
+        try{
+            if( ! object.isNull("period")){
+                JSONObject periodObj = object.getJSONObject("period");
+                item.period = Period.findByServerId(periodObj.getLong("id"));
+            }
+
+            if( ! object.isNull("ward")){
+                JSONObject wardObj = object.getJSONObject("ward");
+                item.ward = Ward.findByServerId(wardObj.getLong("id"));
+            }
+            item.serverId = object.getLong("id");
+        }catch (JSONException ex){
+            ex.printStackTrace();
+            return null;
+        }
+        return item;
     }
 }

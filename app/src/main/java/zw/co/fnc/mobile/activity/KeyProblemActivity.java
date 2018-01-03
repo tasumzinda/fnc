@@ -89,6 +89,7 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
 
             }
         });
+        Log.d("Test", String.valueOf(microPlan != null));
         if(driver != null){
             int i = 0;
             for(KeyProblemCategory d : KeyProblemCategory.getAll()){
@@ -123,11 +124,14 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
                 }
             }
             setSupportActionBar(createToolBar("FNC Mobile:: Create/Edit Driver Of Stunting For " + District.findById(district).name + " " + Ward.findById(ward).name + " " + Period.findById(period).name + " Action Plan"));
-        }else{
+        }else if(microPlan != 0L){
             driver = new KeyProblem();
             QuarterlyMicroPlan m = QuarterlyMicroPlan.findById(microPlan);
             Log.d("Plan", AppUtil.createGson().toJson(m));
             setSupportActionBar(createToolBar("FNC Mobile:: Create/Edit Driver Of Stunting For " + m.ward.district.name + " " + m.ward.name + " " + m.period.name + " Action Plan"));
+        }else{
+            driver = new KeyProblem();
+            setSupportActionBar(createToolBar("FNC Mobile:: Create/Edit Driver Of Stunting For " + District.findById(district).name + " " + Ward.findById(ward).name + " " + Period.findById(period).name + " Action Plan"));
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -214,7 +218,11 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
             driver.interventions = getInterventions();
             driver.indicators = getIndicators();
             intent.putExtra("driver", driver);
-            intent.putExtra("intervention", intervention);
+            if(intervention != null){
+                intent.putExtra("intervention", intervention);
+            }else{
+                intent.putExtra("intervention", getInterventions());
+            }
             startActivity(intent);
             finish();
         }

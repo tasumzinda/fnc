@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS"/>
     <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
             android:name=".util.FNCMobile"
@@ -43,9 +46,15 @@
         <activity android:name=".activity.ActionPlanItemActivity1"/>
 
         <service android:name=".rest.PullService"/>
+        <service android:name=".rest.FileDownloadService"/>
+        <service android:name=".rest.DownloadPlanService"/>
 
         <activity android:name=".activity.ActionRequiredStep2Activity">
         </activity>
+        <activity android:name=".activity.util.PermissionsActivity"/>
+        <activity android:name=".activity.FileDownloadActivity"/>
+        <activity android:name=".activity.LoginActivity"/>
+        <activity android:name=".activity.DownloadPlanActivity"/>
     </application>
 
 </manifest>

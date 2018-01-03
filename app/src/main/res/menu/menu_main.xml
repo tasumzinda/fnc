@@ -1,7 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:context="zw.org.zvandiri.activity.MainActivity">
+      xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/action_exit"
           android:title="@string/action_exit"
           android:orderInCategory="100"
@@ -9,7 +7,17 @@
           app:showAsAction="always"/>
     <item android:id="@+id/action_refresh"
           android:title="@string/action_refresh"
-          android:orderInCategory="300"
+          android:orderInCategory="200"
           app:showAsAction="always"
           android:icon="@mipmap/refresh"/>
+    <item android:id="@+id/action_download"
+          android:title="Download File"
+          android:orderInCategory="300"
+          android:icon="@drawable/ic_file_download_white_24dp"
+          app:showAsAction="always"/>
+    <item android:id="@+id/action_search"
+          android:title="Download Action Plan"
+          android:orderInCategory="400"
+          android:icon="@drawable/ic_search_white_24dp"
+          app:showAsAction="always"/>
 </menu>

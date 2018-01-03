@@ -8,7 +8,7 @@ import com.google.gson.annotations.Expose;
 
 import java.util.List;
 
-@Table(name = "action_category_department")
+@Table(name = "action_required_department")
 public class ActionRequiredDepartmentCategoryContract extends Model{
 
     @Expose

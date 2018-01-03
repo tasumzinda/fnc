@@ -369,7 +369,7 @@ public class ActionPlanItemActivity extends BaseActivity {
             departmentHeaderRow.addView(departmentHeading);
             departmentHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
             departmentTable.addView(departmentHeaderRow);
-            for(DepartmentCategory department : action.departmentCategorys){
+            for(DepartmentCategory department : action.departments){
                 TableRow departmentRow = new TableRow(this);
                 departmentRow.setBackgroundResource(R.drawable.indicator_background);
                 departmentRow.setLayoutParams(rowParams);

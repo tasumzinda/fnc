@@ -24,14 +24,9 @@ public class ActionPlanItemActivity1 extends BaseActivity{
     private Long driverOfStuntingCategory;
     private ArrayList<Indicator> indicators;
     private ArrayList<InterventionCategory> interventions;
-    private ArrayList<Indicator> selectedIndicators;
-    private ArrayList<InterventionCategory> selectedInterventions;
-    private KeyProblem driver;
     private ArrayList<KeyProblem> selectedDrivers;
-    private Button addDriverOfStunting;
     private Long microPlan;
     TableLayout mainHeader;
-    Button save;
     private QuarterlyMicroPlan holder;
     private KeyProblem driver1;
     private ArrayList<Long> departmentCategories;
@@ -42,7 +37,6 @@ public class ActionPlanItemActivity1 extends BaseActivity{
     private String actualDateOfCompletion;
     private String percentageDone;
     private Long actionRequired;
-    private Long driverId;
     private ArrayList<InterventionCategory> intervention;
     TableRow.LayoutParams textParams;
     TableLayout.LayoutParams rowParams;
@@ -79,21 +73,7 @@ public class ActionPlanItemActivity1 extends BaseActivity{
             setSupportActionBar(createToolBar("FNC Mobile:: " + QuarterlyMicroPlan.findById(microPlan).ward.district.name + " " + QuarterlyMicroPlan.findById(microPlan).ward.name + " " + QuarterlyMicroPlan.findById(microPlan).period.name + " Action Plan"));
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        selectedIndicators = new ArrayList<>();
-        selectedInterventions = new ArrayList<>();
-        /*for(int i = 0; i < driver1.indicators.size(); i++){
-            Indicator ind = Indicator.findById(indicators.get(i));
-            selectedIndicators.add(ind);
-        }
-        for(int i = 0; i < interventions.size(); i++){
-            InterventionCategory inter = InterventionCategory.findById(interventions.get(i));
-            selectedInterventions.add(inter);
-        }*/
         selectedDrivers = new ArrayList<>();
-        /*driver = new KeyProblem();
-        driver.keyProblemCategory = (KeyProblemCategory.findById(driverOfStuntingCategory));
-        driver.indicators = selectedIndicators;
-        driver.interventions = selectedInterventions;*/
         selectedDrivers.add(driver1);
         init();
     }

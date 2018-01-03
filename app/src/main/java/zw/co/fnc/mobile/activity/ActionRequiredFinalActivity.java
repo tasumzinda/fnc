@@ -131,7 +131,10 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
     @Override
     public void onClick(View view) {
         if (view.getId() == save.getId()) {
-            save();
+            if(isValid()){
+                save();
+            }
+
         }
     }
 
@@ -143,6 +146,7 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
                 item = new QuarterlyMicroPlan();
                 item.ward = Ward.findById(ward);
                 item.period = Period.findById(period);
+                item.pushed = 1;
                 item.save();
             }
 
@@ -178,6 +182,17 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
             }
 
             if (driverId == 0L) {
+                ArrayList<InterventionCategory> items = new ArrayList<>();
+                for (InterventionCategory m : intervention) {
+                    if (m.serverId.equals(selectedIntervention)) {
+                        for (ActionRequired a : m.actionRequireds) {
+                            a.potentialChallengesCategorys = getPotentialChallengesCategories();
+                            a.strategyCategorys = getStrategyCategories();
+                            Log.d("Action", AppUtil.createGson().toJson(a));
+                        }
+                    }
+                    items.add(m);
+                }
                 for (int i = 0; i < indicators.size(); i++) {
                     KeyProblemIndicatorContract indicatorContract = new KeyProblemIndicatorContract();
                     indicatorContract.keyProblem = driver;
@@ -203,66 +218,29 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
                             resourcesNeededContract.save();
                             Log.d("Saved res contract", AppUtil.createGson().toJson(resourcesNeededContract));
                         }
-                        for(DepartmentCategory item : actionRequired.departmentCategorys){
+                        for(DepartmentCategory item : actionRequired.departments){
                             ActionRequiredDepartmentCategoryContract departmentCategoryContract = new ActionRequiredDepartmentCategoryContract();
                             departmentCategoryContract.actionRequired = actionRequired;
                             departmentCategoryContract.departmentCategory = DepartmentCategory.findByServerId(item.serverId);
                             departmentCategoryContract.save();
                             Log.d("Saved dpt contract", AppUtil.createGson().toJson(departmentCategoryContract));
                         }
+                        for (StrategyCategory strategy : actionRequired.strategyCategorys){
+                            ActionRequiredStrategyCategoryContract strategyCategoryContract = new ActionRequiredStrategyCategoryContract();
+                            strategyCategoryContract.actionRequired = actionRequired;
+                            strategyCategoryContract.strategyCategory = StrategyCategory.findByServerId(strategy.serverId);
+                            strategyCategoryContract.save();
+                            Log.d("Saved strat contract", AppUtil.createGson().toJson(strategyCategoryContract));
+                        }
+                        for(PotentialChallengesCategory item : actionRequired.potentialChallengesCategorys){
+                            ActionRequiredPotentialChallengesCategoryContract challengesCategoryContract = new ActionRequiredPotentialChallengesCategoryContract();
+                            challengesCategoryContract.actionRequired = actionRequired;
+                            challengesCategoryContract.potentialChallengesCategory = PotentialChallengesCategory.findByServerId(item.serverId);
+                            challengesCategoryContract.save();
+                            Log.d("Saved pot contract", AppUtil.createGson().toJson(item));
+                        }
                     }
                 }
-                /*for (InterventionCategory interventionCategory : InterventionCategory.findByKeyProblem(driver)) {
-                    Log.d("Interventions", InterventionCategory.findByKeyProblem(driver).size() + " ");
-                    ActionRequired action = new ActionRequired();
-                    action.actionCategory = ActionCategory.findById(actionRequired);
-                    if (!actualDateOfCompletion.equals("")) {
-                        action.actualDateOfCompletion = DateUtil.getDateFromString(actualDateOfCompletion);
-                    }
-                    action.keyProblem = driver;
-                    action.expectedDateOfCompletion = DateUtil.getDateFromString(expectedDateOfCompletion);
-                    action.interventionCategory = interventionCategory;
-                    if (!percentageDone.equals("")) {
-                        action.percentageDone = Integer.parseInt(percentageDone);
-                    }
-                    action.save();
-                    for (int i = 0; i < getPotentialChallenges().size(); i++) {
-                        ActionRequiredPotentialChallengesCategoryContract challengesCategoryContract = new ActionRequiredPotentialChallengesCategoryContract();
-                        challengesCategoryContract.actionRequired = action;
-                        challengesCategoryContract.potentialChallengesCategory = PotentialChallengesCategory.findById(getPotentialChallenges().get(i));
-                        challengesCategoryContract.save();
-                    }
-                    for (int i = 0; i < resourcesNeeded.size(); i++) {
-                        ActionRequiredResourcesNeededContract resourcesNeededContract = new ActionRequiredResourcesNeededContract();
-                        resourcesNeededContract.actionRequired = action;
-                        resourcesNeededContract.resourcesNeededCategory = ResourcesNeededCategory.findById(resourcesNeeded.get(i));
-                        resourcesNeededContract.save();
-                    }
-                    for (int i = 0; i < departmentCategories.size(); i++) {
-                        ActionRequiredDepartmentCategoryContract departmentCategoryContract = new ActionRequiredDepartmentCategoryContract();
-                        departmentCategoryContract.actionRequired = action;
-                        departmentCategoryContract.departmentCategory = DepartmentCategory.findById(departmentCategories.get(i));
-                        departmentCategoryContract.save();
-                    }
-                    for (int i = 0; i < getStrategies().size(); i++) {
-                        ActionRequiredStrategyCategoryContract strategyCategoryContract = new ActionRequiredStrategyCategoryContract();
-                        strategyCategoryContract.actionRequired = action;
-                        strategyCategoryContract.strategyCategory = StrategyCategory.findById(getStrategies().get(i));
-                        strategyCategoryContract.save();
-                    }
-                    for (int i = 0; i < intervention.size(); i++) {
-                        KeyProblemInterventionCategoryContract interventionContract = new KeyProblemInterventionCategoryContract();
-                        interventionContract.keyProblem = driver;
-                        interventionContract.interventionCategory = InterventionCategory.findByServerId(intervention.get(i).serverId);
-                        interventionContract.save();
-                    }
-                    for (int i = 0; i < indicators.size(); i++) {
-                        KeyProblemIndicatorContract indicatorContract = new KeyProblemIndicatorContract();
-                        indicatorContract.keyProblem = driver;
-                        indicatorContract.indicator = Indicator.findByServerId(indicators.get(i).serverId);
-                        indicatorContract.save();
-                    }
-                }*/
             }
             Intent intent = new Intent(ActionRequiredFinalActivity.this, LoadActionPlanActivity.class);
             Log.d("microPlan", microPlan + " ");
@@ -420,5 +398,19 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
             }
         }
         return isComplete;
+    }
+
+    public boolean isValid(){
+        boolean isValid = true;
+        if(getPotentialChallengesCategories().isEmpty()){
+            AppUtil.createShortNotification(this, "Please select at least one potential challenge");
+            isValid = false;
+        }
+
+        if(getStrategyCategories().isEmpty()){
+            AppUtil.createShortNotification(this, "Please select at least one strategy category");
+            isValid = false;
+        }
+        return isValid;
     }
 }

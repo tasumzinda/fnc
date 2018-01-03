@@ -1,26 +1,31 @@
 package zw.co.fnc.mobile.activity;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.ProgressDialog;
+import android.Manifest;
+import android.app.*;
 import android.content.*;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 import zw.co.fnc.mobile.R;
+import zw.co.fnc.mobile.activity.util.PermissionsActivity;
+import zw.co.fnc.mobile.activity.util.PermissionsChecker;
 import zw.co.fnc.mobile.rest.PullService;
 import zw.co.fnc.mobile.util.AppUtil;
 import zw.co.fnc.mobile.util.DateUtil;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -30,7 +35,18 @@ public class BaseActivity extends AppCompatActivity {
     public Menu menu;
     public Toolbar toolbar;
     ProgressDialog progressDialog;
+    private long refid;
+    ArrayList<Long> list = new ArrayList<>();
+    private static final String[] PERMISSIONS_READ_STORAGE = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+    PermissionsChecker checker = new PermissionsChecker(context);
+    DownloadManager downloadManager;
+    private Uri uri = Uri.parse("http://www.gadgetsaint.com/wp-content/uploads/2016/11/cropped-web_hi_res_512.png");
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -39,7 +55,11 @@ public class BaseActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    /*@Override
+    public void startPermissionsActivity(String[] permission) {
+        PermissionsActivity.startActivityForResult((Activity) context, 0, permission);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
@@ -49,7 +69,12 @@ public class BaseActivity extends AppCompatActivity {
             onBackPressed();
         }
 
-        if (id == R.id.action_home) {
+        if (id == R.id.action_refresh) {
+            syncAppData();
+            return true;
+        }
+
+        /*if (id == R.id.action_home) {
             intent = new Intent(context, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
@@ -60,26 +85,6 @@ public class BaseActivity extends AppCompatActivity {
         if (id == R.id.action_infor) {
             AppUtil.getAppDialog(context);
             return true;
-        }
-
-        if (id == R.id.action_refresh) {
-            syncAppData();
-            return true;
-        }
-
-        if (id == R.id.action_change_password) {
-            intent = new Intent(context, ChangePasswordActivity.class);
-            startActivity(intent);
-            finish();
-            return true;
-        }
-        if(id == R.id.action_update){
-            WVersionManager versionManager = new WVersionManager(this);
-            versionManager.setVersionContentUrl("http://update.pzat.org/update/version.txt"); // your update content url, see the response format below
-            versionManager.setUpdateUrl("http://update.pzat.org/update/app-release.apk");
-            versionManager.setIgnoreThisVersionLabel(" ");
-            versionManager.setRemindMeLaterLabel("");
-            versionManager.checkVersion();
         }
 
         if (id == R.id.action_logout) {
@@ -98,7 +103,7 @@ public class BaseActivity extends AppCompatActivity {
                     .setNegativeButton("No", null)
                     .show();
             return true;
-        }
+        }*/
 
         if (id == R.id.action_exit) {
             new AlertDialog.Builder(context)
@@ -115,14 +120,24 @@ public class BaseActivity extends AppCompatActivity {
         }
 
 
-        if (id == R.id.action_settings) {
-            intent = new Intent(context, SettingsActivity.class);
-            startActivity(intent);
+        if (id == R.id.action_download) {
+            if(checker.lacksPermissions(PERMISSIONS_READ_STORAGE)){
+                startPermissionsActivity(PERMISSIONS_READ_STORAGE);
+            }else{
+                //intent = new Intent(context, FileDownloadActivity.class);
+                //startActivity(intent);
+                download();
+            }
             return true;
         }
 
+        if(id == R.id.action_search){
+            intent = new Intent(this, DownloadPlanActivity.class);
+            startActivity(intent);
+        }
+
         return super.onOptionsItemSelected(item);
-    }*/
+    }
 
     public Toolbar createToolBar(String title) {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -191,12 +206,21 @@ public class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         registerReceiver(receiver, new IntentFilter(PullService.NOTIFICATION));
+        registerReceiver(onDownloadComplete,
+                new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(receiver);
+        unregisterReceiver(onDownloadComplete);
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        //unregisterReceiver(onDownloadComplete);
     }
 
     @Override
@@ -254,5 +278,54 @@ public class BaseActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 }).setNegativeButton("no", null).show();
+    }
+
+    public void download(){
+        list.clear();
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+        request.setAllowedOverRoaming(false);
+        request.setTitle("FNC Downloading " + "Sample" + ".png");
+        request.setDescription("Downloading " + "Sample" + ".png");
+        request.setVisibleInDownloadsUi(true);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/fnc/sample.png");
+        refid = downloadManager.enqueue(request);
+        Log.e("OUT", "" + refid);
+        list.add(refid);
+    }
+
+    BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
+
+        public void onReceive(Context ctxt, Intent intent) {
+            long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+            Log.e("IN", "" + referenceId);
+            list.remove(referenceId);
+            if (list.isEmpty()){
+                Log.e("INSIDE", "" + referenceId);
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(getApplicationContext())
+                                .setSmallIcon(R.mipmap.ic_launcher)
+                                .setContentTitle("FNC")
+                                .setContentText("All Download completed");
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(455, mBuilder.build());
+
+
+            }
+
+        }
+    };
+
+    public boolean validate(EditText[] fields) {
+        boolean isValid = true;
+        for (int i = 0; i < fields.length; i++) {
+            if (fields[i].getText().toString().isEmpty()) {
+                fields[i].setError(getResources().getString(R.string.required_field_error));
+                isValid = false;
+            } else {
+                fields[i].setError(null);
+            }
+        }
+        return isValid;
     }
 }
