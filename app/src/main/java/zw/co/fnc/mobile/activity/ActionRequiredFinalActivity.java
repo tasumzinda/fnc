@@ -14,6 +14,7 @@ import zw.co.fnc.mobile.util.AppUtil;
 import zw.co.fnc.mobile.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by User on 3/11/2017.
@@ -46,6 +47,7 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
     private ArrayList<Long> potentialChallenges;
     private ArrayList<InterventionCategory> intervention;
     private Long selectedIntervention;
+    private Long actionReq;
 
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
@@ -67,6 +69,7 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
         actualDateOfCompletion = intent.getStringExtra("actualDateOfCompletion");
         percentageDone = intent.getStringExtra("percentageDone");
         actionRequired = intent.getLongExtra("actionRequired", 0L);
+        actionReq = intent.getLongExtra("actionReq", 0L);
         selectedIntervention = intent.getLongExtra("selectedIntervention", 0L);
         intervention = (ArrayList<InterventionCategory>) intent.getSerializableExtra("intervention");
         resourcesNeeded = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
@@ -81,24 +84,23 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
         strategys.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         challenges.setItemsCanFocus(false);
         challenges.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        if (driverId != 0L) {
-            KeyProblem d = KeyProblem.findById(driverId);
-            for (ActionRequired action : ActionRequired.findByKeyProblem(d)) {
-                ArrayList<StrategyCategory> list = (ArrayList<StrategyCategory>) StrategyCategory.findByActionRequired(action);
-                int count = strategyCategoryArrayAdapter.getCount();
-                for (int k = 0; k < count; k++) {
-                    StrategyCategory current = strategyCategoryArrayAdapter.getItem(k);
-                    if (list.contains(current)) {
-                        strategys.setItemChecked(k, true);
-                    }
+        if (actionReq != 0L) {
+            ActionRequired item = ActionRequired.findById(actionReq);
+            List<PotentialChallengesCategory> challengesList = PotentialChallengesCategory.findByActionRequired(item);
+            int count = potentialChallengesCategoryArrayAdapter.getCount();
+            for(int i = 0; i < count; i++){
+                PotentialChallengesCategory current = potentialChallengesCategoryArrayAdapter.getItem(i);
+                if(challengesList.contains(current)){
+                    challenges.setItemChecked(i, true);
                 }
-                ArrayList<PotentialChallengesCategory> challengesList = (ArrayList<PotentialChallengesCategory>) PotentialChallengesCategory.findByActionRequired(action);
-                count = potentialChallengesCategoryArrayAdapter.getCount();
-                for (int k = 0; k < count; k++) {
-                    PotentialChallengesCategory current = potentialChallengesCategoryArrayAdapter.getItem(k);
-                    if (challengesList.contains(current)) {
-                        challenges.setItemChecked(k, true);
-                    }
+            }
+
+            List<StrategyCategory> list = StrategyCategory.findByActionRequired(item);
+            count = strategyCategoryArrayAdapter.getCount();
+            for(int i = 0; i < count; i++){
+                StrategyCategory current = strategyCategoryArrayAdapter.getItem(i);
+                if(list.contains(current)){
+                    strategys.setItemChecked(i, true);
                 }
             }
         } else if (strategyCategories != null) {
@@ -123,9 +125,6 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
         setSupportActionBar(createToolBar("FNC Mobile::Create/ Edit Ward Intervention - Final"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         save.setOnClickListener(this);
-        for(InterventionCategory m : intervention){
-            Log.d("Inter", AppUtil.createGson().toJson(m));
-        }
     }
 
     @Override
@@ -142,6 +141,7 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
         if (isComplete(intervention)) {
             if (microPlan != 0L) {
                 item = QuarterlyMicroPlan.findById(microPlan);
+                Log.d("Plan", AppUtil.createGson().toJson(item));
             } else {
                 item = new QuarterlyMicroPlan();
                 item.ward = Ward.findById(ward);
@@ -152,6 +152,7 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
 
             if (driverId != 0L) {
                 driver = KeyProblem.findById(driverId);
+                Log.d("Driver", AppUtil.createGson().toJson(driver));
             } else {
                 driver = new KeyProblem();
                 driver.keyProblemCategory = KeyProblemCategory.findById(driverOfStuntingCategory);
@@ -160,7 +161,8 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
             }
 
             if (driverId != 0L) {
-                for (ActionRequired action : ActionRequired.findByKeyProblem(KeyProblem.findById(driverId))) {
+                //for (ActionRequired action : ActionRequired.findByKeyProblem(driver)) {
+                ActionRequired action = ActionRequired.findById(actionReq);
                     for (ActionRequiredPotentialChallengesCategoryContract c : ActionRequiredPotentialChallengesCategoryContract.findByActionRequired(action)) {
                         c.delete();
                         Log.d("Deleted challenge", c.potentialChallengesCategory.name);
@@ -178,6 +180,53 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
                         Log.d("Deleted department", c.departmentCategory.name);
                     }
                     action.delete();
+                    ArrayList<InterventionCategory> items = new ArrayList<>();
+                    for (InterventionCategory m : intervention) {
+                        Log.d("Size: ", intervention.size() + ":");
+                        for (ActionRequired a : m.actionRequireds) {
+                            a.potentialChallengesCategorys = getPotentialChallengesCategories();
+                            a.strategyCategorys = getStrategyCategories();
+                            Log.d("Action", AppUtil.createGson().toJson(a));
+                        }
+                        items.add(m);
+                    }
+                for (int i = 0; i < intervention.size(); i++) {
+                    for (ActionRequired actionRequired : intervention.get(i).actionRequireds) {
+                        Log.d("Action",  AppUtil.createGson().toJson(actionRequired));
+                        actionRequired.actionCategory = ActionCategory.findByServerId(actionRequired.actionCategory.serverId);
+                        actionRequired.keyProblem = driver;
+                        actionRequired.interventionCategory = InterventionCategory.findByServerId(intervention.get(i).serverId);
+                        actionRequired.save();
+                        Log.d("Saved action", AppUtil.createGson().toJson(actionRequired));
+                        for(ResourcesNeededCategory resource : actionRequired.resourcesNeededCategorys){
+                            ActionRequiredResourcesNeededContract resourcesNeededContract = new ActionRequiredResourcesNeededContract();
+                            resourcesNeededContract.actionRequired = actionRequired;
+                            resourcesNeededContract.resourcesNeededCategory = ResourcesNeededCategory.findByServerId(resource.serverId);
+                            resourcesNeededContract.save();
+                            Log.d("Saved res contract", AppUtil.createGson().toJson(resourcesNeededContract));
+                        }
+                        for(DepartmentCategory item : actionRequired.departments){
+                            ActionRequiredDepartmentCategoryContract departmentCategoryContract = new ActionRequiredDepartmentCategoryContract();
+                            departmentCategoryContract.actionRequired = actionRequired;
+                            departmentCategoryContract.departmentCategory = DepartmentCategory.findByServerId(item.serverId);
+                            departmentCategoryContract.save();
+                            Log.d("Saved dpt contract", AppUtil.createGson().toJson(departmentCategoryContract));
+                        }
+                        for (StrategyCategory strategy : actionRequired.strategyCategorys){
+                            ActionRequiredStrategyCategoryContract strategyCategoryContract = new ActionRequiredStrategyCategoryContract();
+                            strategyCategoryContract.actionRequired = actionRequired;
+                            strategyCategoryContract.strategyCategory = StrategyCategory.findByServerId(strategy.serverId);
+                            strategyCategoryContract.save();
+                            Log.d("Saved strat contract", AppUtil.createGson().toJson(strategyCategoryContract));
+                        }
+                        for(PotentialChallengesCategory item : actionRequired.potentialChallengesCategorys){
+                            ActionRequiredPotentialChallengesCategoryContract challengesCategoryContract = new ActionRequiredPotentialChallengesCategoryContract();
+                            challengesCategoryContract.actionRequired = actionRequired;
+                            challengesCategoryContract.potentialChallengesCategory = PotentialChallengesCategory.findByServerId(item.serverId);
+                            challengesCategoryContract.save();
+                            Log.d("Saved pot contract", AppUtil.createGson().toJson(item));
+                        }
+                    }
                 }
             }
 
@@ -251,9 +300,8 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
             }
             startActivity(intent);
             finish();
-        } else
-
-        {
+        } else{
+            Log.d("Test", "Inside else");
             Intent intent = new Intent(this, ActionPlanItemActivity.class);
             intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion);
             intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
@@ -278,13 +326,9 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
                     for (ActionRequired a : m.actionRequireds) {
                         a.potentialChallengesCategorys = getPotentialChallengesCategories();
                         a.strategyCategorys = getStrategyCategories();
-                        Log.d("Action", AppUtil.createGson().toJson(a));
                     }
                 }
                 items.add(m);
-            }
-            for(InterventionCategory m : items){
-                Log.d("Intervention", m.name + " " + AppUtil.createGson().toJson(m));
             }
             intent.putExtra("intervention", items);
             startActivity(intent);
@@ -357,6 +401,7 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
         intent.putExtra("interventions", interventions);
         intent.putExtra("microPlan", microPlan);
         intent.putExtra("driverId", driverId);
+        intent.putExtra("actionReq", actionReq);
         intent.putExtra("strategyCategories", getStrategies());
         intent.putExtra("potentialChallenges", getPotentialChallenges());
         intent.putExtra("departmentCategories", departmentCategories);

@@ -10,6 +10,7 @@ import zw.co.fnc.mobile.business.domain.*;
 import zw.co.fnc.mobile.util.AppUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ActionRequiredStep2Activity extends BaseActivity implements View.OnClickListener {
 
@@ -35,6 +36,7 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
     private ArrayList<Long> potentialChallenges;
     private ArrayList<InterventionCategory> intervention;
     private Long selectedIntervention;
+    private Long actionReq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
         actualDateOfCompletion = intent.getStringExtra("actualDateOfCompletion");
         percentageDone = intent.getStringExtra("percentageDone");
         actionRequired = intent.getLongExtra("actionRequired", 0L);
+        actionReq = intent.getLongExtra("actionReq", 0L);
         selectedIntervention = intent.getLongExtra("selectedIntervention", 0L);
         resourcesNeeded = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
         departments = (ArrayList<Long>) intent.getSerializableExtra("departmentCategories");
@@ -67,17 +70,14 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
         departmentCategory.setItemsCanFocus(false);
         departmentCategory.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         next.setOnClickListener(this);
-        if(driverId != 0L){
-            KeyProblem d = KeyProblem.findById(driverId);
-            int i = 0;
-            for(ActionRequired action : ActionRequired.findByKeyProblem(d)){
-                ArrayList<DepartmentCategory> resources = (ArrayList<DepartmentCategory>) DepartmentCategory.findByActionRequired(action);
-                int count = departmentCategoryArrayAdapter.getCount();
-                for(int k = 0; k < count; k++){
-                    DepartmentCategory current = departmentCategoryArrayAdapter.getItem(k);
-                    if(resources.contains(current)){
-                        departmentCategory.setItemChecked(i, true);
-                    }
+        if(actionReq != 0L){
+            ActionRequired item = ActionRequired.findById(actionReq);
+            List<DepartmentCategory> departmentCategories = DepartmentCategory.findByActionRequired(item);
+            int count = departmentCategoryArrayAdapter.getCount();
+            for(int i = 0; i < count; i++){
+                DepartmentCategory current = departmentCategoryArrayAdapter.getItem(i);
+                if(departmentCategories.contains(current)){
+                    departmentCategory.setItemChecked(i, true);
                 }
             }
         }else if(departments != null){
@@ -92,9 +92,6 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
         }
         setSupportActionBar(createToolBar("FNC Mobile::Create/ Edit Ward Intervention Action-Step 2"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        for(InterventionCategory in : intervention){
-            Log.d("Intervention", in.name + " " + AppUtil.createGson().toJson(in));
-        }
     }
 
     public void save(){
@@ -119,15 +116,26 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
             intent.putExtra("potentialChallenges", potentialChallenges);
             intent.putExtra("selectedIntervention", selectedIntervention);
             ArrayList<InterventionCategory> items = new ArrayList<>();
-            for(InterventionCategory m : intervention){
-                if(m.serverId.equals(selectedIntervention)){
-                    for(ActionRequired a : m.actionRequireds){
-                        a.departments = getDepartment();
+            if(driverId == 0L){
+                for(InterventionCategory m : intervention){
+                    if(m.serverId.equals(selectedIntervention)){
+                        for(ActionRequired a : m.actionRequireds){
+                            a.departments = getDepartment();
+                        }
                     }
+                    items.add(m);
                 }
-                items.add(m);
+            }else{
+                ActionRequired item = ActionRequired.findById(actionReq);
+                InterventionCategory interventionCategory = item.interventionCategory;
+                for(ActionRequired a : interventionCategory.actionRequireds){
+                    a.departments = getDepartment();
+                }
+                items.add(interventionCategory);
             }
+
             intent.putExtra("intervention", items);
+            intent.putExtra("actionReq", actionReq);
             startActivity(intent);
             finish();
         }
@@ -175,6 +183,8 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
     public void onBackPressed(){
         Intent intent = new Intent(ActionRequiredStep2Activity.this, ActionRequiredStep1Activity.class);
         intent.putExtra("microPlan", microPlan);
+        intent.putExtra("driverId", driverId);
+        intent.putExtra("actionReq", actionReq);
         intent.putExtra("ward", ward);
         intent.putExtra("district", district);
         intent.putExtra("period", period);

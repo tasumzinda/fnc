@@ -80,6 +80,20 @@ public class ActionRequired extends Model implements Serializable{
                 .execute();
     }
 
+    public static ActionRequired findByServerId(Long serverId){
+        return new Select()
+                .from(ActionRequired.class)
+                .where("serverId = ?", serverId)
+                .executeSingle();
+    }
+
+    public static ActionRequired findById(Long Id){
+        return new Select()
+                .from(ActionRequired.class)
+                .where("Id = ?", Id)
+                .executeSingle();
+    }
+
     public static List<ActionRequired> findByInterventionCategory(InterventionCategory interventionCategory){
         return new Select()
                 .from(ActionRequired.class)

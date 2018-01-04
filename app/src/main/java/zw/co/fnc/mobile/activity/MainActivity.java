@@ -45,7 +45,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if(savedInstanceState == null){
-            syncAppData();
+            if(Period.getAll().isEmpty()){
+                syncAppData();
+            }
+
         }
         Intent intent = getIntent();
         holder = (QuarterlyMicroPlan) intent.getSerializableExtra("plan");

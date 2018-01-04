@@ -29,16 +29,12 @@ public class FileDownloadService extends IntentService {
 
     public static final String NOTIFICATION = "zw.co.fnc";
     private Context context = this;
-    public static final String RESULT = "result";
-    String fileUrl = "https://static.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg";
-    File directory = Environment
+    public static final String RESULT = "result";File directory = Environment
             .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     String saveDir = directory.getPath();
-    private static final String[] PERMISSIONS_READ_STORAGE = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
-    PermissionsChecker checker;
 
     public FileDownloadService(){
-        super("PullService");
+        super("FileDownloadService");
     }
 
     public void onHandleIntent(Intent intent){
@@ -77,7 +73,6 @@ public class FileDownloadService extends IntentService {
             String [] header = new String[]{"code", "name", "dob", "household", "village", "ward", "district", "province"};
             csvWriter.writeNext(header);
             for (MotherChildDTO item : list) {
-                Log.d("MotherChildDTO", AppUtil.createGson().toJson(item));
                 if(item != null){
                     String [] content = new String[]{item.code, item.name, item.dob, item.houseHold, item.village, item.ward, item.district, item.province};
                     csvWriter.writeNext(content);
@@ -93,7 +88,4 @@ public class FileDownloadService extends IntentService {
         return msg;
     }
 
-    public void startPermissionsActivity(String[] permission) {
-        PermissionsActivity.startActivityForResult((Activity) context, 0, permission);
-    }
 }

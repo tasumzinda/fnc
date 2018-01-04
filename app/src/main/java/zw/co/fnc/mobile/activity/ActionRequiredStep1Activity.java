@@ -14,6 +14,7 @@ import zw.co.fnc.mobile.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class ActionRequiredStep1Activity extends BaseActivity implements View.OnClickListener{
 
@@ -45,6 +46,7 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
     private ArrayList<Long> resources;
     private Long selectedIntervention;
     private ArrayList<InterventionCategory> intervention;
+    private Long actionReq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,7 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         indicators = (ArrayList<Indicator>) intent.getSerializableExtra("indicators");
         interventions = (ArrayList<InterventionCategory>) intent.getSerializableExtra("interventions");
         action =  intent.getLongExtra("actionRequired", 0L);
+        actionReq = intent.getLongExtra("actionReq", 0L);
         selectedIntervention = intent.getLongExtra("selectedIntervention", 0L);
         intervention = (ArrayList<InterventionCategory>) intent.getSerializableExtra("intervention");
         actionRequired = (Spinner) findViewById(R.id.action_required);
@@ -104,33 +107,34 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         );
         expectedDateOfCompletion.setOnClickListener(this);
         actualDateOfCompletion.setOnClickListener(this);
-        if(driverId != 0L){
-            /*KeyProblem d = KeyProblem.findById(driverId);
+        if(actionReq != 0L){
+            ActionRequired item = ActionRequired.findById(actionReq);
             int i = 0;
-            for(ActionRequired action : ActionRequired.findByKeyProblem(d)){
-                for(ActionCategory category : ActionCategory.getAll()){
-                    if(action.actionCategory != null && action.actionCategory.equals(actionRequired.getItemAtPosition(i))){
-                        actionRequired.setSelection(i);
-                        break;
-                    }
-                    i++;
+            ActionCategory actionCategory = item.actionCategory;
+            for(ActionCategory category : ActionCategory.getAll()){
+                if(actionCategory != null && actionCategory.equals(actionRequired.getItemAtPosition(i))){
+                    actionRequired.setSelection(i, true);
+                    break;
                 }
-                if(action.actualDateOfCompletion != null){
-                    updateLabel(action.actualDateOfCompletion , actualDateOfCompletion);
+                i++;
+            }
+            if(item.expectedDateOfCompletion != null){
+                updateLabel(item.expectedDateOfCompletion, expectedDateOfCompletion);
+            }
+            if(item.actualDateOfCompletion != null){
+                updateLabel(item.actualDateOfCompletion, actualDateOfCompletion);
+            }
+            if(item.percentageDone != null){
+                percentageDone.setText(String.valueOf(item.percentageDone));
+            }
+            int count = resourcesNeededCategoryArrayAdapter.getCount();
+            List<ResourcesNeededCategory> resources = ResourcesNeededCategory.findByActionRequired(item);
+            for(int k = 0; k < count; k++){
+                ResourcesNeededCategory current = resourcesNeededCategoryArrayAdapter.getItem(k);
+                if(resources.contains(current)){
+                    resourcesNeeded.setItemChecked(k, true);
                 }
-                updateLabel(action.expectedDateOfCompletion, expectedDateOfCompletion);
-                if(action.percentageDone != null){
-                    percentageDone.setText(action.percentageDone.toString());
-                }
-                ArrayList<ResourcesNeededCategory> resources = (ArrayList<ResourcesNeededCategory>) ResourcesNeededCategory.findByActionRequired(action);
-                int count = resourcesNeededCategoryArrayAdapter.getCount();
-                for(int k = 0; k < count; k++){
-                    ResourcesNeededCategory current = resourcesNeededCategoryArrayAdapter.getItem(k);
-                    if(resources.contains(current)){
-                        resourcesNeeded.setItemChecked(i, true);
-                    }
-                }
-            }*/
+            }
         }else if(action != 0L){
             int i = 0;
             for(ActionCategory category : ActionCategory.getAll()){
@@ -161,9 +165,6 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         }
         setSupportActionBar(createToolBar("FNC Mobile::Create/ Edit Ward Intervention Action-Step 1"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if(intervention != null){
-            Log.d("Data", AppUtil.createGson().toJson(intervention));
-        }
     }
 
     public void save(){
@@ -187,6 +188,7 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
             intent.putExtra("strategyCategories", strategyCategories);
             intent.putExtra("selectedIntervention", selectedIntervention);
             intent.putExtra("driver", driver);
+            intent.putExtra("actionReq", actionReq);
             ActionRequired action = new ActionRequired();
             action.actionCategory = (ActionCategory) actionRequired.getSelectedItem();
             if(! actualDateOfCompletion.getText().toString().isEmpty()){
@@ -204,17 +206,21 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
             ArrayList<ActionRequired> list = new ArrayList<>();
             list.add(action);
             ArrayList<InterventionCategory> items = new ArrayList<>();
-            for(InterventionCategory m : intervention){
-                if(m.serverId.equals(selectedIntervention)){
-                    m.actionRequireds = list;
-                }
-                items.add(m);
-                if(intervention != null){
-                    for(InterventionCategory i : items){
-                        Log.d("Data", AppUtil.createGson().toJson(i));
+            if(driverId == 0L){
+                for(InterventionCategory m : intervention){
+                    if(m.serverId.equals(selectedIntervention)){
+                        m.actionRequireds = list;
                     }
+                    items.add(m);
                 }
+            }else{
+                ActionRequired item = ActionRequired.findById(actionReq);
+
+                InterventionCategory interventionCategory = item.interventionCategory;
+                interventionCategory.actionRequireds = list;
+                items.add(interventionCategory);
             }
+
             intent.putExtra("intervention", items);
             startActivity(intent);
             finish();
@@ -278,50 +284,58 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
     }
 
     public void onBackPressed(){
-        Intent intent = new Intent(ActionRequiredStep1Activity.this, ActionPlanItemActivity1.class);
-        intent.putExtra("microPlan", microPlan);
-        intent.putExtra("ward", ward);
-        intent.putExtra("district", district);
-        intent.putExtra("period", period);
-        intent.putExtra("driverOfStuntingCategory", driverOfStuntingCategory);
-        intent.putExtra("indicators", indicators);
-        intent.putExtra("interventions", interventions);
-        intent.putExtra("departmentCategories",departmentCategories);
-        intent.putExtra("resourcesNeeded", getResourcesNeeded());
-        intent.putExtra("driver", driver);
-        intent.putExtra("driverId", driverId);
-        intent.putExtra("potentialChallenges", potentialChallenges);
-        intent.putExtra("strategyCategories", strategyCategories);
-        intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion.getText().toString());
-        intent.putExtra("actualDateOfCompletion", actualDateOfCompletion.getText().toString());
-        intent.putExtra("percentageDone", percentageDone.getText().toString().trim());
-        intent.putExtra("actionRequired", ((ActionCategory) actionRequired.getSelectedItem()).getId());
-        ActionRequired action = new ActionRequired();
-        action.actionCategory = (ActionCategory) actionRequired.getSelectedItem();
-        if(! actualDateOfCompletion.getText().toString().isEmpty()){
-            action.actualDateOfCompletion = DateUtil.getDateFromString(actualDateOfCompletion.getText().toString());
-        }
-        if( ! expectedDateOfCompletion.getText().toString().isEmpty()){
-            action.expectedDateOfCompletion = DateUtil.getDateFromString(expectedDateOfCompletion.getText().toString());
-        }
-        if(! percentageDone.getText().toString().isEmpty()){
-            action.percentageDone = Integer.parseInt(percentageDone.getText().toString().trim());
-        }
-        action.resourcesNeededCategorys = getResource();
-        action.interventionCategory = InterventionCategory.findByServerId(selectedIntervention);
-        action.keyProblem = driver;
-        ArrayList<ActionRequired> list = new ArrayList<>();
-        list.add(action);
-        ArrayList<InterventionCategory> items = new ArrayList<>();
-        for(InterventionCategory m : interventions){
-            if(m.serverId.equals(selectedIntervention)){
-                m.actionRequireds = list;
+        if(driverId == 0L){
+            Intent intent = new Intent(ActionRequiredStep1Activity.this, ActionPlanItemActivity1.class);
+            intent.putExtra("microPlan", microPlan);
+            intent.putExtra("ward", ward);
+            intent.putExtra("district", district);
+            intent.putExtra("period", period);
+            intent.putExtra("driverOfStuntingCategory", driverOfStuntingCategory);
+            intent.putExtra("indicators", indicators);
+            intent.putExtra("interventions", interventions);
+            intent.putExtra("departmentCategories",departmentCategories);
+            intent.putExtra("resourcesNeeded", getResourcesNeeded());
+            intent.putExtra("driver", driver);
+            intent.putExtra("driverId", driverId);
+            intent.putExtra("potentialChallenges", potentialChallenges);
+            intent.putExtra("strategyCategories", strategyCategories);
+            intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion.getText().toString());
+            intent.putExtra("actualDateOfCompletion", actualDateOfCompletion.getText().toString());
+            intent.putExtra("percentageDone", percentageDone.getText().toString().trim());
+            intent.putExtra("actionRequired", ((ActionCategory) actionRequired.getSelectedItem()).getId());
+            ActionRequired action = new ActionRequired();
+            action.actionCategory = (ActionCategory) actionRequired.getSelectedItem();
+            if(! actualDateOfCompletion.getText().toString().isEmpty()){
+                action.actualDateOfCompletion = DateUtil.getDateFromString(actualDateOfCompletion.getText().toString());
             }
-            items.add(m);
+            if( ! expectedDateOfCompletion.getText().toString().isEmpty()){
+                action.expectedDateOfCompletion = DateUtil.getDateFromString(expectedDateOfCompletion.getText().toString());
+            }
+            if(! percentageDone.getText().toString().isEmpty()){
+                action.percentageDone = Integer.parseInt(percentageDone.getText().toString().trim());
+            }
+            action.resourcesNeededCategorys = getResource();
+            action.interventionCategory = InterventionCategory.findByServerId(selectedIntervention);
+            action.keyProblem = driver;
+            ArrayList<ActionRequired> list = new ArrayList<>();
+            list.add(action);
+            ArrayList<InterventionCategory> items = new ArrayList<>();
+            for(InterventionCategory m : interventions){
+                if(m.serverId.equals(selectedIntervention)){
+                    m.actionRequireds = list;
+                }
+                items.add(m);
+            }
+            intent.putExtra("intervention", items);
+            startActivity(intent);
+            finish();
+        }else{
+            Intent intent = new Intent(this, LoadActionPlanActivity.class);
+            intent.putExtra("microPlan", microPlan);
+            startActivity(intent);
+            finish();
         }
-        intent.putExtra("intervention", items);
-        startActivity(intent);
-        finish();
+
     }
 
     @Override

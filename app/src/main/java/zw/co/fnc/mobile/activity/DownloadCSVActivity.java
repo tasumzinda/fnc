@@ -77,7 +77,10 @@ public class DownloadCSVActivity extends BaseActivity implements View.OnClickLis
         periodArrayAdapter = new ArrayAdapter<Period>(this, R.layout.simple_spinner_item, Period.getAll());
         periodArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         period.setAdapter(periodArrayAdapter);
+        period.setVisibility(View.GONE);
         progressDialog = new ProgressDialog(this);
+        setSupportActionBar(createToolBar("FNC Mobile:: Download CSV File"));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

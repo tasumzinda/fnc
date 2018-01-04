@@ -152,6 +152,9 @@ public class BaseActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     createNotificationDataSync("Sync Success", "Application Data Updated");
                     AppUtil.createShortNotification(context, "Application Data Updated");
+                    Intent intent1 = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent1);
+                    finish();
                 } else {
                     createNotificationDataSync("Sync Fail", "Incomplete Application Data");
                     AppUtil.createShortNotification(context, "Incomplete Application Data");
