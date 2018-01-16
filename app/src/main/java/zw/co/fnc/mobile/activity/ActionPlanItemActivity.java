@@ -113,21 +113,21 @@ public class ActionPlanItemActivity extends BaseActivity {
             driverHeaderRow.setLayoutParams(rowParams);
             TextView driverHeading = new TextView(this);
             driverHeading.setLayoutParams(textParams);
-            driverHeading.setTextSize(18);
+            driverHeading.setTextSize(20);
             driverHeading.setTextColor(getResources().getColor(R.color.white));
             driverHeading.setTypeface(Typeface.DEFAULT_BOLD);
             driverHeading.setText("DRIVER OF STUNTING");
             driverHeading.setPadding(10, 10, 10, 5);
             driverHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
             driverHeaderRow.addView(driverHeading);
-            driverHeaderRow.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            driverHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
             mainTable.addView(driverHeaderRow);
             mainTable.setStretchAllColumns(true);
             TableRow mainRow = new TableRow(this);
             mainRow.setLayoutParams(rowParams);
             TextView driverOfStunting = new TextView(this);
             driverOfStunting.setText(driver1.keyProblemCategory.name);
-            driverOfStunting.setTextSize(18);
+            driverOfStunting.setTextSize(20);
             driverOfStunting.setTextColor(getResources().getColor(R.color.colorPrimary));
             driverOfStunting.setPadding(10, 10, 10, 5);
             mainRow.addView(driverOfStunting);
@@ -141,20 +141,20 @@ public class ActionPlanItemActivity extends BaseActivity {
             TableRow indicatorHeaderRow = new TableRow(this);
             TextView indicatorHeading = new TextView(this);
             indicatorHeading.setLayoutParams(textParams);
-            indicatorHeading.setTextSize(18);
+            indicatorHeading.setTextSize(20);
             indicatorHeading.setTextColor(getResources().getColor(R.color.white));
             indicatorHeading.setTypeface(Typeface.DEFAULT_BOLD);
             indicatorHeading.setText("PROBLEM INDICATOR");
             indicatorHeading.setPadding(10, 10, 10, 5);
             indicatorHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
             indicatorHeaderRow.addView(indicatorHeading);
-            indicatorHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+            indicatorHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
             indicatorTable.addView(indicatorHeaderRow);
             for(Indicator indicator : driver1.indicators){
                 TableRow indicatorRow = new TableRow(this);
                 indicatorRow.setLayoutParams(rowParams);
                 TextView problemIndicator = new TextView(this);
-                problemIndicator.setTextSize(16);
+                problemIndicator.setTextSize(20);
                 problemIndicator.setLayoutParams(textParams);
                 problemIndicator.setPadding(10, 10, 10, 5);
                 problemIndicator.setText(indicator.name);
@@ -172,14 +172,14 @@ public class ActionPlanItemActivity extends BaseActivity {
             TableRow interventionHeaderRow = new TableRow(this);
             TextView interventionHeading = new TextView(this);
             interventionHeading.setLayoutParams(textParams);
-            interventionHeading.setTextSize(18);
+            interventionHeading.setTextSize(20);
             interventionHeading.setTextColor(getResources().getColor(R.color.white));
             interventionHeading.setTypeface(Typeface.DEFAULT_BOLD);
             interventionHeading.setText("INTERVENTION TO ADDRESS PROBLEM");
             interventionHeading.setPadding(10, 10, 10, 5);
             interventionHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
             interventionHeaderRow.addView(interventionHeading);
-            interventionHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+            interventionHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
             interventionTable.addView(interventionHeaderRow);
             for(final InterventionCategory item : intervention){
                 if(item.actionRequireds.size() > 0){
@@ -188,11 +188,13 @@ public class ActionPlanItemActivity extends BaseActivity {
                     TableRow interventionRow = new TableRow(this);
                     interventionRow.setLayoutParams(rowParams);
                     TextView problemIntervention = new TextView(this);
-                    problemIntervention.setTextSize(16);
+                    problemIntervention.setTextSize(20);
                     problemIntervention.setLayoutParams(textParams);
                     problemIntervention.setPadding(10, 10, 10, 5);
                     problemIntervention.setText(item.name);
                     Button addAction = new Button(this);
+                    addAction.setTextColor(getResources().getColor(R.color.white));
+                    addAction.setTypeface(Typeface.DEFAULT_BOLD);
                     addAction.setText("Add Action Required");
                     addAction.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -272,23 +274,15 @@ public class ActionPlanItemActivity extends BaseActivity {
         TableRow interventionRow = new TableRow(this);
         interventionRow.setLayoutParams(rowParams);
         TextView problemIntervention = new TextView(this);
-        problemIntervention.setTextSize(16);
+        problemIntervention.setTextSize(20);
         problemIntervention.setLayoutParams(textParams);
         problemIntervention.setPadding(10, 10, 10, 5);
         problemIntervention.setText(intervention.name);
         Button addAction = new Button(this);
-        addAction.setText("Review Action");
         addAction.setTypeface(Typeface.DEFAULT_BOLD);
-            /*addAction.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(LoadActionPlanActivity.this, ActionRequiredStep1Activity.class);
-                    intent.putExtra("driverId", d.getId());
-                    intent.putExtra("microPlan", microPlan);
-                    startActivity(intent);
-                    finish();
-                }
-            });*/
+        addAction.setTextColor(getResources().getColor(R.color.white));
+        addAction.setText("Review Action");
+
         interventionRow.addView(problemIntervention);
         interventionRow.addView(addAction);
         interventionRow.setBackgroundResource(R.drawable.indicator_background);
@@ -302,14 +296,14 @@ public class ActionPlanItemActivity extends BaseActivity {
         TableRow actionHeaderRow = new TableRow(this);
         TextView actionHeading = new TextView(this);
         actionHeading.setLayoutParams(textParams);
-        actionHeading.setTextSize(18);
+        actionHeading.setTextSize(20);
         actionHeading.setTextColor(getResources().getColor(R.color.white));
         actionHeading.setTypeface(Typeface.DEFAULT_BOLD);
         actionHeading.setText("ACTION REQUIRED");
         actionHeading.setPadding(10, 10, 10, 5);
         actionHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
         actionHeaderRow.addView(actionHeading);
-        actionHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+        actionHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
         actionRequiredTable.addView(actionHeaderRow);
         for(ActionRequired action : intervention.actionRequireds){
             TableRow actionRequiredDataRow = new TableRow(this);
@@ -317,7 +311,7 @@ public class ActionPlanItemActivity extends BaseActivity {
             actionRequiredDataRow.setBackgroundResource(R.drawable.indicator_background);
             actionRequiredDataRow.setMinimumHeight(60);
             TextView actionTaken = new TextView(this);
-            actionTaken.setTextSize(16);
+            actionTaken.setTextSize(20);
             actionTaken.setLayoutParams(textParams);
             actionTaken.setText(action.actionCategory.name);
             actionTaken.setPadding(10, 10, 10, 5);
@@ -330,14 +324,14 @@ public class ActionPlanItemActivity extends BaseActivity {
             TableRow resourcesHeaderRow = new TableRow(this);
             TextView resourcesHeading = new TextView(this);
             resourcesHeading.setLayoutParams(textParams);
-            resourcesHeading.setTextSize(18);
+            resourcesHeading.setTextSize(20);
             resourcesHeading.setTextColor(getResources().getColor(R.color.white));
             resourcesHeading.setTypeface(Typeface.DEFAULT_BOLD);
             resourcesHeading.setText("RESOURCES NEEDED");
             resourcesHeading.setPadding(10, 10, 10, 5);
             resourcesHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
             resourcesHeaderRow.addView(resourcesHeading);
-            resourcesHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+            resourcesHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
             resourcesTable.addView(resourcesHeaderRow);
             for(ResourcesNeededCategory resource : action.resourcesNeededCategorys){
                 TableRow resourcesRow = new TableRow(this);
@@ -345,6 +339,7 @@ public class ActionPlanItemActivity extends BaseActivity {
                 resourcesRow.setLayoutParams(rowParams);
                 resourcesRow.setMinimumHeight(60);
                 TextView resources = new TextView(this);
+                resources.setTextSize(20);
                 resources.setText(resource.name);
                 resources.setPadding(10, 10, 10, 5);
                 resources.setLayoutParams(textParams);
@@ -360,14 +355,14 @@ public class ActionPlanItemActivity extends BaseActivity {
             TableRow departmentHeaderRow = new TableRow(this);
             TextView departmentHeading = new TextView(this);
             departmentHeading.setLayoutParams(textParams);
-            departmentHeading.setTextSize(18);
+            departmentHeading.setTextSize(20);
             departmentHeading.setTextColor(getResources().getColor(R.color.white));
             departmentHeading.setTypeface(Typeface.DEFAULT_BOLD);
             departmentHeading.setText("DEPARTMENT");
             departmentHeading.setPadding(10, 10, 10, 5);
             departmentHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
             departmentHeaderRow.addView(departmentHeading);
-            departmentHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+            departmentHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
             departmentTable.addView(departmentHeaderRow);
             for(DepartmentCategory department : action.departments){
                 TableRow departmentRow = new TableRow(this);
@@ -375,6 +370,7 @@ public class ActionPlanItemActivity extends BaseActivity {
                 departmentRow.setLayoutParams(rowParams);
                 departmentRow.setMinimumHeight(60);
                 TextView departments = new TextView(this);
+                departments.setTextSize(20);
                 departments.setText(department.name);
                 departments.setPadding(10, 10, 10, 5);
                 departments.setLayoutParams(textParams);
@@ -389,14 +385,14 @@ public class ActionPlanItemActivity extends BaseActivity {
             TableRow strategyHeaderRow = new TableRow(this);
             TextView strategyHeading = new TextView(this);
             strategyHeading.setLayoutParams(textParams);
-            strategyHeading.setTextSize(18);
+            strategyHeading.setTextSize(20);
             strategyHeading.setTextColor(getResources().getColor(R.color.white));
             strategyHeading.setTypeface(Typeface.DEFAULT_BOLD);
             strategyHeading.setText("STRATEGY TO OVERCOME CHALLENGES");
             strategyHeading.setPadding(10, 10, 10, 5);
             strategyHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
             strategyHeaderRow.addView(strategyHeading);
-            strategyHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+            strategyHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
             strategyTable.addView(strategyHeaderRow);
             for(StrategyCategory strategy : action.strategyCategorys){
                 TableRow strategyRow = new TableRow(this);
@@ -404,6 +400,7 @@ public class ActionPlanItemActivity extends BaseActivity {
                 strategyRow.setLayoutParams(rowParams);
                 strategyRow.setMinimumHeight(60);
                 TextView strategys = new TextView(this);
+                strategys.setTextSize(20);
                 strategys.setText(strategy.name);
                 strategys.setPadding(10, 10, 10, 5);
                 strategys.setLayoutParams(textParams);
@@ -419,14 +416,14 @@ public class ActionPlanItemActivity extends BaseActivity {
             TableRow challengesHeaderRow = new TableRow(this);
             TextView challengesHeading = new TextView(this);
             challengesHeading.setLayoutParams(textParams);
-            challengesHeading.setTextSize(18);
+            challengesHeading.setTextSize(20);
             challengesHeading.setTextColor(getResources().getColor(R.color.white));
             challengesHeading.setTypeface(Typeface.DEFAULT_BOLD);
             challengesHeading.setText("POTENTIAL CHALLENGES");
             challengesHeading.setPadding(10, 10, 10, 5);
             challengesHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
             challengesHeaderRow.addView(challengesHeading);
-            challengesHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+            challengesHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
             challengesTable.addView(challengesHeaderRow);
             for(PotentialChallengesCategory challenge : action.potentialChallengesCategorys){
                 TableRow challengesRow = new TableRow(this);
@@ -434,6 +431,7 @@ public class ActionPlanItemActivity extends BaseActivity {
                 challengesRow.setLayoutParams(rowParams);
                 challengesRow.setMinimumHeight(60);
                 TextView challenges = new TextView(this);
+                challenges.setTextSize(20);
                 challenges.setText(challenge.name);
                 challenges.setPadding(10, 10, 10, 5);
                 challenges.setLayoutParams(textParams);

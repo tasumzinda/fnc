@@ -210,7 +210,7 @@ public class BaseActivity extends AppCompatActivity {
     public void createNotificationDataSync(String title, String msg) {
         Notification notification = new Notification.Builder(this)
                 .setContentTitle(title)
-                .setContentText(msg).setSmallIcon(R.mipmap.ic_launcher)
+                .setContentText(msg).setSmallIcon(R.mipmap.fnc_logo)
                 .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notification.flags |= Notification.FLAG_AUTO_CANCEL;

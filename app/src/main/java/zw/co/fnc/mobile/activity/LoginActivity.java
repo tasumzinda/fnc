@@ -11,6 +11,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,6 +35,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private EditText passwordField;
     private Button button;
     private EditText[] fields;
+    private EditText url;
     ProgressDialog progressDialog;
 
 
@@ -43,20 +45,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         setContentView(R.layout.activity_login);
         userNameField = (EditText) findViewById(R.id.username);
         passwordField = (EditText) findViewById(R.id.password);
+        url = (EditText) findViewById(R.id.url);
         button = (Button) findViewById(R.id.login);
         button.setOnClickListener(this);
         progressDialog = new ProgressDialog(this);
         fields = new EditText[] {userNameField, passwordField};
-
+        url.setText(AppUtil.APP_URL);
     }
     private void loginRemote(){
-        String URL = "http://192.168.1.172:8084/fnc-mobile/rest/mobile/login/get-user?userName=" + userNameField.getText().toString();
+        String URL = url.getText().toString()+ "login/get-user?userName=" + userNameField.getText().toString();
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (com.android.volley.Request.Method.GET, URL, null, new com.android.volley.Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("Response", response.toString());
                         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                         boolean hasLoggedIn = sharedPreferences.contains(AppUtil.LOGGED_IN);
                         if(! hasLoggedIn){
@@ -65,6 +67,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                             AppUtil.savePrefs(AppUtil.LOGGED_IN, Boolean.TRUE, getApplicationContext());
                             AppUtil.savePrefs(AppUtil.USERNAME, userNameField.getText().toString(), getApplicationContext());
                             AppUtil.savePrefs(AppUtil.PASSWORD, passwordField.getText().toString(), getApplicationContext());
+                            AppUtil.savePrefs(AppUtil.WEB_SERVICE_URL, url.getText().toString(), getApplicationContext());
                             progressDialog.hide();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);

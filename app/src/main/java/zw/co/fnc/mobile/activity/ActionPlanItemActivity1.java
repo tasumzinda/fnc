@@ -90,21 +90,21 @@ public class ActionPlanItemActivity1 extends BaseActivity{
             driverHeaderRow.setLayoutParams(rowParams);
             TextView driverHeading = new TextView(this);
             driverHeading.setLayoutParams(textParams);
-            driverHeading.setTextSize(18);
+            driverHeading.setTextSize(20);
             driverHeading.setTextColor(getResources().getColor(R.color.white));
             driverHeading.setTypeface(Typeface.DEFAULT_BOLD);
             driverHeading.setText("DRIVER OF STUNTING");
             driverHeading.setPadding(10, 10, 10, 5);
             driverHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
             driverHeaderRow.addView(driverHeading);
-            driverHeaderRow.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            driverHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
             mainTable.addView(driverHeaderRow);
             mainTable.setStretchAllColumns(true);
             TableRow mainRow = new TableRow(this);
             mainRow.setLayoutParams(rowParams);
             TextView driverOfStunting = new TextView(this);
             driverOfStunting.setText(driver1.keyProblemCategory.name);
-            driverOfStunting.setTextSize(18);
+            driverOfStunting.setTextSize(20);
             driverOfStunting.setTextColor(getResources().getColor(R.color.colorPrimary));
             driverOfStunting.setPadding(10, 10, 10, 5);
             mainRow.addView(driverOfStunting);
@@ -118,20 +118,20 @@ public class ActionPlanItemActivity1 extends BaseActivity{
             TableRow indicatorHeaderRow = new TableRow(this);
             TextView indicatorHeading = new TextView(this);
             indicatorHeading.setLayoutParams(textParams);
-            indicatorHeading.setTextSize(18);
+            indicatorHeading.setTextSize(20);
             indicatorHeading.setTextColor(getResources().getColor(R.color.white));
             indicatorHeading.setTypeface(Typeface.DEFAULT_BOLD);
             indicatorHeading.setText("PROBLEM INDICATOR");
             indicatorHeading.setPadding(10, 10, 10, 5);
             indicatorHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
             indicatorHeaderRow.addView(indicatorHeading);
-            indicatorHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+            indicatorHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
             indicatorTable.addView(indicatorHeaderRow);
             for(Indicator indicator : driver1.indicators){
                 TableRow indicatorRow = new TableRow(this);
                 indicatorRow.setLayoutParams(rowParams);
                 TextView problemIndicator = new TextView(this);
-                problemIndicator.setTextSize(16);
+                problemIndicator.setTextSize(20);
                 problemIndicator.setLayoutParams(textParams);
                 problemIndicator.setPadding(10, 10, 10, 5);
                 problemIndicator.setText(indicator.name);
@@ -149,24 +149,26 @@ public class ActionPlanItemActivity1 extends BaseActivity{
             TableRow interventionHeaderRow = new TableRow(this);
             TextView interventionHeading = new TextView(this);
             interventionHeading.setLayoutParams(textParams);
-            interventionHeading.setTextSize(18);
+            interventionHeading.setTextSize(20);
             interventionHeading.setTextColor(getResources().getColor(R.color.white));
             interventionHeading.setTypeface(Typeface.DEFAULT_BOLD);
             interventionHeading.setText("INTERVENTION TO ADDRESS PROBLEM");
             interventionHeading.setPadding(10, 10, 10, 5);
             interventionHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
             interventionHeaderRow.addView(interventionHeading);
-            interventionHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+            interventionHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
             interventionTable.addView(interventionHeaderRow);
             for(final InterventionCategory item : driver1.interventions){
                 TableRow interventionRow = new TableRow(this);
                 interventionRow.setLayoutParams(rowParams);
                 TextView problemIntervention = new TextView(this);
-                problemIntervention.setTextSize(16);
+                problemIntervention.setTextSize(20);
                 problemIntervention.setLayoutParams(textParams);
                 problemIntervention.setPadding(10, 10, 10, 5);
                 problemIntervention.setText(item.name);
                 Button addAction = new Button(this);
+                addAction.setTextColor(getResources().getColor(R.color.white));
+                addAction.setTypeface(Typeface.DEFAULT_BOLD);
                 addAction.setText("Add Action Required");
                 addAction.setOnClickListener(new View.OnClickListener() {
                     @Override

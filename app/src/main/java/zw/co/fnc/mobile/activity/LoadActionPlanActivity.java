@@ -51,7 +51,7 @@ public class LoadActionPlanActivity extends BaseActivity {
             driverHeading.setPadding(10, 10, 10, 5);
             driverHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
             driverHeaderRow.addView(driverHeading);
-            driverHeaderRow.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            driverHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
             mainTable.addView(driverHeaderRow);
             mainTable.setStretchAllColumns(true);
             TableRow mainRow = new TableRow(this);
@@ -80,7 +80,7 @@ public class LoadActionPlanActivity extends BaseActivity {
             indicatorHeading.setPadding(10, 10, 10, 5);
             indicatorHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
             indicatorHeaderRow.addView(indicatorHeading);
-            indicatorHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+            indicatorHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
             indicatorTable.addView(indicatorHeaderRow);
             for(Indicator indicator : Indicator.findByKeyProblem(d)){
                 TableRow indicatorRow = new TableRow(this);
@@ -112,7 +112,7 @@ public class LoadActionPlanActivity extends BaseActivity {
             interventionHeading.setPadding(10, 10, 10, 5);
             interventionHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
             interventionHeaderRow.addView(interventionHeading);
-            interventionHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+            interventionHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
             interventionTable.addView(interventionHeaderRow);
             for(InterventionCategory intervention : InterventionCategory.findByKeyProblem(d)){
                 TableRow interventionRow = new TableRow(this);
@@ -142,7 +142,7 @@ public class LoadActionPlanActivity extends BaseActivity {
                 actionHeading.setPadding(10, 10, 10, 5);
                 actionHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
                 actionHeaderRow.addView(actionHeading);
-                actionHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+                actionHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
                 actionRequiredTable.addView(actionHeaderRow);
                 for(final ActionRequired action : ActionRequired.findByKeyProblemAndInterventionCategory(d, intervention)){
                     TableRow actionRequiredDataRow = new TableRow(this);
@@ -157,6 +157,7 @@ public class LoadActionPlanActivity extends BaseActivity {
                     actionTaken.setPadding(10, 10, 10, 5);
                     actionRequiredDataRow.addView(actionTaken);
                     Button addAction = new Button(this);
+                    addAction.setTextColor(getResources().getColor(R.color.white));
                     addAction.setText("Review Action");
                     addAction.setTypeface(Typeface.DEFAULT_BOLD);
                     actionRequiredDataRow.addView(addAction);
@@ -186,7 +187,7 @@ public class LoadActionPlanActivity extends BaseActivity {
                     resourcesHeading.setPadding(10, 10, 10, 5);
                     resourcesHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
                     resourcesHeaderRow.addView(resourcesHeading);
-                    resourcesHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+                    resourcesHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
                     resourcesTable.addView(resourcesHeaderRow);
                     for(ActionRequiredResourcesNeededContract resource : ActionRequiredResourcesNeededContract.findByActionRequired(action)){
                         TableRow resourcesRow = new TableRow(this);
@@ -218,7 +219,7 @@ public class LoadActionPlanActivity extends BaseActivity {
                     departmentHeading.setPadding(10, 10, 10, 5);
                     departmentHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
                     departmentHeaderRow.addView(departmentHeading);
-                    departmentHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+                    departmentHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
                     departmentTable.addView(departmentHeaderRow);
                     for(ActionRequiredDepartmentCategoryContract department : ActionRequiredDepartmentCategoryContract.findByActionRequired(action)){
                         TableRow departmentRow = new TableRow(this);
@@ -249,7 +250,7 @@ public class LoadActionPlanActivity extends BaseActivity {
                     strategyHeading.setPadding(10, 10, 10, 5);
                     strategyHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
                     strategyHeaderRow.addView(strategyHeading);
-                    strategyHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+                    strategyHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
                     strategyTable.addView(strategyHeaderRow);
                     for(ActionRequiredStrategyCategoryContract strategy : ActionRequiredStrategyCategoryContract.findByActionRequired(action)){
                         TableRow strategyRow = new TableRow(this);
@@ -281,7 +282,7 @@ public class LoadActionPlanActivity extends BaseActivity {
                     challengesHeading.setPadding(10, 10, 10, 5);
                     challengesHeaderRow.setBackgroundResource(R.drawable.drawable_row_border);
                     challengesHeaderRow.addView(challengesHeading);
-                    challengesHeaderRow.setBackgroundColor(getResources().getColor(R.color.yellow));
+                    challengesHeaderRow.setBackgroundColor(getResources().getColor(R.color.lightCoral));
                     challengesTable.addView(challengesHeaderRow);
                     for(ActionRequiredPotentialChallengesCategoryContract challenge : ActionRequiredPotentialChallengesCategoryContract.findByActionRequired(action)){
                         TableRow challengesRow = new TableRow(this);
@@ -312,6 +313,7 @@ public class LoadActionPlanActivity extends BaseActivity {
         TableRow addDriverRow = new TableRow(this);
         addDriverRow.setLayoutParams(rowParams);
         Button addDriver = new Button(this);
+        addDriver.setTextColor(getResources().getColor(R.color.white));
         addDriver.setText("Add New Driver Of Stunting");
         addDriver.setTypeface(Typeface.DEFAULT_BOLD);
         addDriver.setOnClickListener(new View.OnClickListener() {

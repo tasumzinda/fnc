@@ -35,15 +35,7 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
     private DatePickerDialog expectedDateOfCompletionDialog;
     private DatePickerDialog actualDateOfCompletionDialog;
     private Long driverId;
-    private ArrayList<Long> departmentCategories;
-    private ArrayList<Long> strategyCategories;
-    private ArrayList<Long> potentialChallenges;
     private KeyProblem driver;
-    private Long action;
-    private String expectedDate;
-    private String actualDate;
-    private String percentage;
-    private ArrayList<Long> resources;
     private Long selectedIntervention;
     private ArrayList<InterventionCategory> intervention;
     private Long actionReq;
@@ -59,17 +51,9 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
         period = intent.getLongExtra("period", 0L);
         microPlan = intent.getLongExtra("microPlan", 0L);
         driver = (KeyProblem) intent.getSerializableExtra("driver");
-        expectedDate = intent.getStringExtra("expectedDateOfCompletion");
-        actualDate = intent.getStringExtra("actualDateOfCompletion");
-        percentage = intent.getStringExtra("percentageDone");
-        resources = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
-        strategyCategories = (ArrayList<Long>) intent.getSerializableExtra("strategyCategories");
-        potentialChallenges = (ArrayList<Long>) intent.getSerializableExtra("potentialChallenges");
-        departmentCategories = (ArrayList<Long>) intent.getSerializableExtra("departmentCategories");
         driverOfStuntingCategory = intent.getLongExtra("driverOfStuntingCategory", 0L);
         indicators = (ArrayList<Indicator>) intent.getSerializableExtra("indicators");
         interventions = (ArrayList<InterventionCategory>) intent.getSerializableExtra("interventions");
-        action =  intent.getLongExtra("actionRequired", 0L);
         actionReq = intent.getLongExtra("actionReq", 0L);
         selectedIntervention = intent.getLongExtra("selectedIntervention", 0L);
         intervention = (ArrayList<InterventionCategory>) intent.getSerializableExtra("intervention");
@@ -135,31 +119,39 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
                     resourcesNeeded.setItemChecked(k, true);
                 }
             }
-        }else if(action != 0L){
+        }else if(intervention != null){
             int i = 0;
-            for(ActionCategory category : ActionCategory.getAll()){
-                if (action != null && action.equals(((ActionCategory) actionRequired.getItemAtPosition(i)).getId())) {
-                    actionRequired.setSelection(i, true);
-                    break;
-                }
-                i++;
-            }
-            if(actualDate != null && ! actualDate.isEmpty()){
-                updateLabel(DateUtil.getDateFromString(actualDate), actualDateOfCompletion);
-            }
-            if(expectedDate != null && ! expectedDate.isEmpty()){
-                updateLabel(DateUtil.getDateFromString(expectedDate), expectedDateOfCompletion);
-            }
-
-            if(percentage != null){
-                percentageDone.setText(percentage);
-            }
-            ArrayList<Long> list = resources;
-            int count = resourcesNeededCategoryArrayAdapter.getCount();
-            for(int k = 0; k < count; k++){
-                ResourcesNeededCategory current = resourcesNeededCategoryArrayAdapter.getItem(k);
-                if(list.contains(current.getId())){
-                    resourcesNeeded.setItemChecked(k, true);
+            for(InterventionCategory item : intervention){
+                if(item.serverId.equals(selectedIntervention)){
+                    for(ActionRequired a : item.actionRequireds){
+                        for(ActionCategory category : ActionCategory.getAll()){
+                            if(a.actionCategory != null && a.actionCategory.serverId.equals(((ActionCategory) actionRequired.getItemAtPosition(i)).serverId)){
+                                actionRequired.setSelection(i, true);
+                                break;
+                            }
+                            i++;
+                        }
+                        if(a.actualDateOfCompletion != null){
+                            updateLabel(a.actualDateOfCompletion, actualDateOfCompletion);
+                        }
+                        if(a.expectedDateOfCompletion != null){
+                            updateLabel(a.expectedDateOfCompletion, expectedDateOfCompletion);
+                        }
+                        if(a.percentageDone != null){
+                            percentageDone.setText(String.valueOf(a.percentageDone));
+                        }
+                        ArrayList<Long> resourcesNeededCategories = new ArrayList<>();
+                        for(ResourcesNeededCategory resource : a.resourcesNeededCategorys){
+                            resourcesNeededCategories.add(resource.serverId);
+                        }
+                        int count = resourcesNeededCategoryArrayAdapter.getCount();
+                        for(int k = 0; k < count; k++){
+                            ResourcesNeededCategory current = resourcesNeededCategoryArrayAdapter.getItem(k);
+                            if(resourcesNeededCategories.contains(current.serverId)){
+                                resourcesNeeded.setItemChecked(k, true);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -170,11 +162,6 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
     public void save(){
         if(validate()){
             Intent intent = new Intent(this, ActionRequiredStep2Activity.class);
-            intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion.getText().toString());
-            intent.putExtra("actualDateOfCompletion", actualDateOfCompletion.getText().toString());
-            intent.putExtra("percentageDone", percentageDone.getText().toString());
-            intent.putExtra("actionRequired", ((ActionCategory) actionRequired.getSelectedItem()).getId());
-            intent.putExtra("resourcesNeeded", getResourcesNeeded());
             intent.putExtra("district", district);
             intent.putExtra("ward", ward);
             intent.putExtra("period", period);
@@ -183,9 +170,6 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
             intent.putExtra("interventions", interventions);
             intent.putExtra("microPlan", microPlan);
             intent.putExtra("driverId", driverId);
-            intent.putExtra("departmentCategories",departmentCategories);
-            intent.putExtra("potentialChallenges", potentialChallenges);
-            intent.putExtra("strategyCategories", strategyCategories);
             intent.putExtra("selectedIntervention", selectedIntervention);
             intent.putExtra("driver", driver);
             intent.putExtra("actionReq", actionReq);
@@ -293,16 +277,9 @@ public class ActionRequiredStep1Activity extends BaseActivity implements View.On
             intent.putExtra("driverOfStuntingCategory", driverOfStuntingCategory);
             intent.putExtra("indicators", indicators);
             intent.putExtra("interventions", interventions);
-            intent.putExtra("departmentCategories",departmentCategories);
-            intent.putExtra("resourcesNeeded", getResourcesNeeded());
             intent.putExtra("driver", driver);
             intent.putExtra("driverId", driverId);
-            intent.putExtra("potentialChallenges", potentialChallenges);
-            intent.putExtra("strategyCategories", strategyCategories);
-            intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion.getText().toString());
-            intent.putExtra("actualDateOfCompletion", actualDateOfCompletion.getText().toString());
-            intent.putExtra("percentageDone", percentageDone.getText().toString().trim());
-            intent.putExtra("actionRequired", ((ActionCategory) actionRequired.getSelectedItem()).getId());
+            intent.putExtra("selectedIntervention", selectedIntervention);
             ActionRequired action = new ActionRequired();
             action.actionCategory = (ActionCategory) actionRequired.getSelectedItem();
             if(! actualDateOfCompletion.getText().toString().isEmpty()){

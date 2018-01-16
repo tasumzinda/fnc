@@ -30,12 +30,6 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
     private Long driverOfStuntingCategory;
     private ArrayList<Indicator> indicators;
     private ArrayList<InterventionCategory> interventions;
-    private String expectedDateOfCompletion;
-    private String actualDateOfCompletion;
-    private String percentageDone;
-    private Long actionRequired;
-    private ArrayList<Long> resourcesNeeded;
-    private ArrayList<Long> departmentCategories;
     Long microPlan;
     private ArrayAdapter<StrategyCategory> strategyCategoryArrayAdapter;
     private ArrayAdapter<PotentialChallengesCategory> potentialChallengesCategoryArrayAdapter;
@@ -43,8 +37,6 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
     private Long driverId;
     KeyProblem driver;
     private KeyProblem driver1;
-    private ArrayList<Long> strategyCategories;
-    private ArrayList<Long> potentialChallenges;
     private ArrayList<InterventionCategory> intervention;
     private Long selectedIntervention;
     private Long actionReq;
@@ -65,17 +57,9 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
         driverOfStuntingCategory = intent.getLongExtra("driverOfStuntingCategory", 0L);
         indicators = (ArrayList<Indicator>) intent.getSerializableExtra("indicators");
         interventions = (ArrayList<InterventionCategory>) intent.getSerializableExtra("interventions");
-        expectedDateOfCompletion = intent.getStringExtra("expectedDateOfCompletion");
-        actualDateOfCompletion = intent.getStringExtra("actualDateOfCompletion");
-        percentageDone = intent.getStringExtra("percentageDone");
-        actionRequired = intent.getLongExtra("actionRequired", 0L);
         actionReq = intent.getLongExtra("actionReq", 0L);
         selectedIntervention = intent.getLongExtra("selectedIntervention", 0L);
         intervention = (ArrayList<InterventionCategory>) intent.getSerializableExtra("intervention");
-        resourcesNeeded = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
-        departmentCategories = (ArrayList<Long>) intent.getSerializableExtra("departmentCategories");
-        strategyCategories = (ArrayList<Long>) intent.getSerializableExtra("strategyCategories");
-        potentialChallenges = (ArrayList<Long>) intent.getSerializableExtra("potentialChallenges");
         strategyCategoryArrayAdapter = new ArrayAdapter<>(this, R.layout.check_box_item, StrategyCategory.getAll());
         strategys.setAdapter(strategyCategoryArrayAdapter);
         potentialChallengesCategoryArrayAdapter = new ArrayAdapter<>(this, R.layout.check_box_item, PotentialChallengesCategory.getAll());
@@ -103,22 +87,38 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
                     strategys.setItemChecked(i, true);
                 }
             }
-        } else if (strategyCategories != null) {
-            ArrayList<Long> list = strategyCategories;
-            int count = strategyCategoryArrayAdapter.getCount();
-            for (int k = 0; k < count; k++) {
-                StrategyCategory current = strategyCategoryArrayAdapter.getItem(k);
-                if (list.contains(current.getId())) {
-                    strategys.setItemChecked(k, true);
-                }
-            }
+        } else if (intervention != null) {
+            for(InterventionCategory item : intervention){
+                if(item.serverId.equals(selectedIntervention)){
+                    for(ActionRequired a : item.actionRequireds){
+                        if(a.strategyCategorys != null){
+                            ArrayList<Long> strategyCategories = new ArrayList<>();
+                            for(StrategyCategory strategy : a.strategyCategorys){
+                                strategyCategories.add(strategy.serverId);
+                            }
+                            int count = strategyCategoryArrayAdapter.getCount();
+                            for(int k = 0; k < count; k++){
+                                StrategyCategory current = strategyCategoryArrayAdapter.getItem(k);
+                                if(strategyCategories.contains(current.serverId)){
+                                    strategys.setItemChecked(k, true);
+                                }
+                            }
+                        }
 
-            ArrayList<Long> list1 = potentialChallenges;
-            count = potentialChallengesCategoryArrayAdapter.getCount();
-            for (int k = 0; k < count; k++) {
-                PotentialChallengesCategory current = potentialChallengesCategoryArrayAdapter.getItem(k);
-                if (list1.contains(current.getId())) {
-                    challenges.setItemChecked(k, true);
+                        if(a.potentialChallengesCategorys != null){
+                            ArrayList<Long> challengeList = new ArrayList<>();
+                            for(PotentialChallengesCategory challenge : a.potentialChallengesCategorys){
+                                challengeList.add(challenge.serverId);
+                            }
+                            int count = potentialChallengesCategoryArrayAdapter.getCount();
+                            for(int k = 0; k < count; k++){
+                                PotentialChallengesCategory current = potentialChallengesCategoryArrayAdapter.getItem(k);
+                                if(challengeList.contains(current.serverId)){
+                                    challenges.setItemChecked(k, true);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -292,7 +292,6 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
                 }
             }
             Intent intent = new Intent(ActionRequiredFinalActivity.this, LoadActionPlanActivity.class);
-            Log.d("microPlan", microPlan + " ");
             if (microPlan != 0L) {
                 intent.putExtra("microPlan", microPlan);
             } else {
@@ -301,13 +300,7 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
             startActivity(intent);
             finish();
         } else{
-            Log.d("Test", "Inside else");
             Intent intent = new Intent(this, ActionPlanItemActivity.class);
-            intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion);
-            intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
-            intent.putExtra("percentageDone", percentageDone);
-            intent.putExtra("actionRequired", actionRequired);
-            intent.putExtra("resourcesNeeded", resourcesNeeded);
             intent.putExtra("district", district);
             intent.putExtra("ward", ward);
             intent.putExtra("period", period);
@@ -316,9 +309,6 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
             intent.putExtra("interventions", interventions);
             intent.putExtra("microPlan", microPlan);
             intent.putExtra("driverId", driverId);
-            intent.putExtra("strategyCategories", getStrategies());
-            intent.putExtra("potentialChallenges", getPotentialChallenges());
-            intent.putExtra("departmentCategories", departmentCategories);
             intent.putExtra("driver", driver1);
             ArrayList<InterventionCategory> items = new ArrayList<>();
             for (InterventionCategory m : intervention) {
@@ -334,32 +324,6 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
             startActivity(intent);
             finish();
         }
-    }
-
-
-
-    private ArrayList<Long> getPotentialChallenges(){
-        ArrayList<Long> a = new ArrayList<>();
-        for(int i = 0; i < challenges.getCount(); i++){
-            if(challenges.isItemChecked(i)){
-                a.add(potentialChallengesCategoryArrayAdapter.getItem(i).getId());
-            }else{
-                a.remove(potentialChallengesCategoryArrayAdapter.getItem(i).getId());
-            }
-        }
-        return a;
-    }
-
-    private ArrayList<Long> getStrategies(){
-        ArrayList<Long> a = new ArrayList<>();
-        for(int i = 0; i < strategys.getCount(); i++){
-            if(strategys.isItemChecked(i)){
-                a.add(strategyCategoryArrayAdapter.getItem(i).getId());
-            }else{
-                a.remove(strategyCategoryArrayAdapter.getItem(i).getId());
-            }
-        }
-        return a;
     }
 
     private ArrayList<PotentialChallengesCategory> getPotentialChallengesCategories(){
@@ -388,11 +352,6 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
 
     public void onBackPressed(){
         Intent intent = new Intent(ActionRequiredFinalActivity.this, ActionRequiredStep2Activity.class);
-        intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion);
-        intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
-        intent.putExtra("percentageDone", percentageDone);
-        intent.putExtra("actionRequired", actionRequired);
-        intent.putExtra("resourcesNeeded", resourcesNeeded);
         intent.putExtra("district", district);
         intent.putExtra("ward", ward);
         intent.putExtra("period", period);
@@ -402,21 +361,17 @@ public class ActionRequiredFinalActivity extends BaseActivity implements View.On
         intent.putExtra("microPlan", microPlan);
         intent.putExtra("driverId", driverId);
         intent.putExtra("actionReq", actionReq);
-        intent.putExtra("strategyCategories", getStrategies());
-        intent.putExtra("potentialChallenges", getPotentialChallenges());
-        intent.putExtra("departmentCategories", departmentCategories);
         intent.putExtra("driver", driver1);
+        intent.putExtra("selectedIntervention", selectedIntervention);
         ArrayList<InterventionCategory> items = new ArrayList<>();
         for(InterventionCategory m : intervention){
             if(m.serverId.equals(selectedIntervention)){
                 for(ActionRequired a : m.actionRequireds){
                     a.potentialChallengesCategorys = getPotentialChallengesCategories();
                     a.strategyCategorys = getStrategyCategories();
-                    Log.d("Action", AppUtil.createGson().toJson(a));
                 }
             }
             items.add(m);
-            Log.d("Inter", AppUtil.createGson().toJson(m));
         }
         intent.putExtra("intervention", items);
         startActivity(intent);

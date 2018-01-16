@@ -44,6 +44,7 @@ public class DownloadPlanActivity extends BaseActivity implements View.OnClickLi
         ward = (Spinner) findViewById(R.id.ward);
         period = (Spinner) findViewById(R.id.period);
         search = (Button) findViewById(R.id.btn_search);
+        search.setText("Download Action Plan");
         search.setOnClickListener(this);
         provinceArrayAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, Province.getAll());
         provinceArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -80,6 +81,8 @@ public class DownloadPlanActivity extends BaseActivity implements View.OnClickLi
         periodArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         period.setAdapter(periodArrayAdapter);
         progressDialog = new ProgressDialog(this);
+        setSupportActionBar(createToolBar("FNC Mobile:: Download Action Plan"));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -87,6 +90,7 @@ public class DownloadPlanActivity extends BaseActivity implements View.OnClickLi
         if(AppUtil.isNetworkAvailable(this)){
             progressDialog.setTitle("Downloading action plan.Please wait......");
             progressDialog.setCancelable(true);
+            progressDialog.show();
             Intent intent = new Intent(this, DownloadPlanService.class);
             intent.putExtra("periodId", ((Period) period.getSelectedItem()).serverId);
             intent.putExtra("wardId", ((Ward) ward.getSelectedItem()).serverId);
@@ -104,9 +108,6 @@ public class DownloadPlanActivity extends BaseActivity implements View.OnClickLi
             Bundle bundle = intent.getExtras();
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
-            }
-            for(QuarterlyMicroPlan m : QuarterlyMicroPlan.getAll()){
-                Log.d("Plan", AppUtil.createGson().toJson(m));
             }
             if (bundle != null) {
                 int resultCode = bundle.getInt(DownloadPlanService.RESULT);

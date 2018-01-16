@@ -25,15 +25,7 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
     private Button next;
     private  Long microPlan;
     private Long driverId;
-    private String expectedDateOfCompletion;
-    private String actualDateOfCompletion;
-    private String percentageDone;
-    private Long actionRequired;
-    private ArrayList<Long> resourcesNeeded;
     private KeyProblem driver;
-    private ArrayList<Long> departments;
-    private ArrayList<Long> strategyCategories;
-    private ArrayList<Long> potentialChallenges;
     private ArrayList<InterventionCategory> intervention;
     private Long selectedIntervention;
     private Long actionReq;
@@ -49,19 +41,11 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
         period = intent.getLongExtra("period", 0L);
         microPlan = intent.getLongExtra("microPlan", 0L);
         driver = (KeyProblem) intent.getSerializableExtra("driver");
-        strategyCategories = (ArrayList<Long>) intent.getSerializableExtra("strategyCategories");
-        potentialChallenges = (ArrayList<Long>) intent.getSerializableExtra("potentialChallenges");
         driverOfStuntingCategory = intent.getLongExtra("driverOfStuntingCategory", 0L);
         indicators = (ArrayList<Indicator>) intent.getSerializableExtra("indicators");
         interventions = (ArrayList<InterventionCategory>) intent.getSerializableExtra("interventions");
-        expectedDateOfCompletion = intent.getStringExtra("expectedDateOfCompletion");
-        actualDateOfCompletion = intent.getStringExtra("actualDateOfCompletion");
-        percentageDone = intent.getStringExtra("percentageDone");
-        actionRequired = intent.getLongExtra("actionRequired", 0L);
         actionReq = intent.getLongExtra("actionReq", 0L);
         selectedIntervention = intent.getLongExtra("selectedIntervention", 0L);
-        resourcesNeeded = (ArrayList<Long>) intent.getSerializableExtra("resourcesNeeded");
-        departments = (ArrayList<Long>) intent.getSerializableExtra("departmentCategories");
         intervention = (ArrayList<InterventionCategory>) intent.getSerializableExtra("intervention");
         next = (Button) findViewById(R.id.btn_next);
         departmentCategory = (ListView) findViewById(R.id.department_category);
@@ -80,15 +64,27 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
                     departmentCategory.setItemChecked(i, true);
                 }
             }
-        }else if(departments != null){
-            ArrayList<Long> list = departments;
-            int count = departmentCategoryArrayAdapter.getCount();
-            for(int k = 0; k < count; k++){
-                DepartmentCategory current = departmentCategoryArrayAdapter.getItem(k);
-                if(list.contains(current.getId())){
-                    departmentCategory.setItemChecked(k, true);
+        }else if(intervention != null){
+            for(InterventionCategory item : intervention){
+                if(item.serverId.equals(selectedIntervention)){
+                    for(ActionRequired a : item.actionRequireds){
+                        if(a.departments != null){
+                            ArrayList<Long> departments = new ArrayList<>();
+                            for(DepartmentCategory department : a.departments){
+                                departments.add(department.serverId);
+                            }
+                            int count = departmentCategoryArrayAdapter.getCount();
+                            for(int k = 0; k < count; k++){
+                                DepartmentCategory current = departmentCategoryArrayAdapter.getItem(k);
+                                if(departments.contains(current.serverId)){
+                                    departmentCategory.setItemChecked(k, true);
+                                }
+                            }
+                        }
+                    }
                 }
             }
+
         }
         setSupportActionBar(createToolBar("FNC Mobile::Create/ Edit Ward Intervention Action-Step 2"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -97,11 +93,6 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
     public void save(){
         if(validate()){
             Intent intent = new Intent(this, ActionRequiredFinalActivity.class);
-            intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion);
-            intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
-            intent.putExtra("percentageDone", percentageDone);
-            intent.putExtra("actionRequired", actionRequired);
-            intent.putExtra("departmentCategories", getDepartmentCategory());
             intent.putExtra("district", district);
             intent.putExtra("ward", ward);
             intent.putExtra("period", period);
@@ -110,10 +101,7 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
             intent.putExtra("interventions", interventions);
             intent.putExtra("microPlan", microPlan);
             intent.putExtra("driverId", driverId);
-            intent.putExtra("resourcesNeeded", resourcesNeeded);
             intent.putExtra("driver", driver);
-            intent.putExtra("strategyCategories", strategyCategories);
-            intent.putExtra("potentialChallenges", potentialChallenges);
             intent.putExtra("selectedIntervention", selectedIntervention);
             ArrayList<InterventionCategory> items = new ArrayList<>();
             if(driverId == 0L){
@@ -191,15 +179,8 @@ public class ActionRequiredStep2Activity extends BaseActivity implements View.On
         intent.putExtra("driverOfStuntingCategory", driverOfStuntingCategory);
         intent.putExtra("indicators", indicators);
         intent.putExtra("interventions", interventions);
-        intent.putExtra("departmentCategories", getDepartmentCategory());
-        intent.putExtra("resourcesNeeded", resourcesNeeded);
-        intent.putExtra("expectedDateOfCompletion", expectedDateOfCompletion);
-        intent.putExtra("actualDateOfCompletion", actualDateOfCompletion);
-        intent.putExtra("percentageDone", percentageDone);
-        intent.putExtra("actionRequired", actionRequired);
         intent.putExtra("driver", driver);
-        intent.putExtra("strategyCategories", strategyCategories);
-        intent.putExtra("potentialChallenges", potentialChallenges);
+        intent.putExtra("selectedIntervention", selectedIntervention);
         ArrayList<InterventionCategory> items = new ArrayList<>();
         for(InterventionCategory m : intervention){
             if(m.serverId.equals(selectedIntervention)){

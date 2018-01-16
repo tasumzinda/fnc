@@ -7,10 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.*;
 import zw.co.fnc.mobile.R;
 import zw.co.fnc.mobile.business.domain.*;
 import zw.co.fnc.mobile.rest.FileDownloadService;
@@ -26,6 +23,7 @@ public class DownloadCSVActivity extends BaseActivity implements View.OnClickLis
     private Spinner ward;
     private Spinner period;
     private Button search;
+    private TextView periodLabel;
     ArrayAdapter<Province> provinceArrayAdapter;
     ArrayAdapter<District> districtArrayAdapter;
     ArrayAdapter<Ward> wardArrayAdapter;
@@ -43,6 +41,8 @@ public class DownloadCSVActivity extends BaseActivity implements View.OnClickLis
         search = (Button) findViewById(R.id.btn_search);
         search.setText("Download CSV File");
         search.setOnClickListener(this);
+        periodLabel = (TextView) findViewById(R.id.periodLabel);
+        periodLabel.setVisibility(View.GONE);
         provinceArrayAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, Province.getAll());
         provinceArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         province.setAdapter(provinceArrayAdapter);

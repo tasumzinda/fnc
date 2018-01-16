@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#4E004E</color>
+    <color name="colorPrimaryDark">#941494</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorWhite">#FFF</color>
     <color name="buttonBlue">#0000FF</color>
@@ -9,9 +9,10 @@
     <color name="notepad_lines">#1b2631</color>
     <color name="notepad_margin">#90FF0000</color>
     <color name="notepad_text">#1b2631</color>
-    <color name="buttonColor">#3F51B5</color>
+    <color name="buttonColor">#4E004E</color>
     <color name="white">#FFF</color>
     <color name="yellow">#BCF900</color>
     <color name="abc">#4A61</color>
     <color name="pink">#b45</color>
+    <color name="lightCoral">#0000FF</color>
 </resources>
