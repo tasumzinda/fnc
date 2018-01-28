@@ -106,6 +106,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 if(AppUtil.isNetworkAvailable(getApplicationContext())){
                     loginRemote();
                 }else if(sharedPreferences.contains("USERNAME")){
+                    Log.d("Test", "Inside");
                     if(AppUtil.getUsername(this).equals(userNameField.getText().toString()) && AppUtil.getPassword(this).equals(passwordField.getText().toString())){
                         AppUtil.savePrefs(AppUtil.LOGGED_IN, Boolean.TRUE, getApplicationContext());
                         Intent intent = new Intent(context, MainActivity.class);

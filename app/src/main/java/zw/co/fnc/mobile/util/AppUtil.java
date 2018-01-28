@@ -28,26 +28,12 @@ import java.util.concurrent.TimeUnit;
 public class AppUtil {
 
     public static MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    public static String ID = "ID";
-    public static String MENTEE_ID = "MENTEE_ID";
-    public static String DSD_ID = "DSD_ID";
-    public static String CASE_ID = "CASE_ID";
-    public static String MENTOR_ID = "MENTOR_ID";
-    public static String DATE_FORMAT = "dd/MM/yyyy";
-    public static String SQL_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    public static String OLD_SQL_DATE_FORMAT = "yyyy-MM-dd";
-    //public static String APP_URL = "http://tracker.pzat.org:8080/tracker-mobile/rest/mobile/"; //PRO
 
-    public static String APP_URL = "http://172.16.0.142:8084/fnc-mobile/rest/mobile/"; //UAT
-    //public static String APP_URL = "http://tracker.pzat.org:8080/itech-mobile/rest/mobile/"; //UAT
+    public static String APP_URL = "http://192.168.43.234:8084/fnc-mobile/rest/mobile/";
     public static String LOGGED_IN = "LOGGED_IN";
     public static String USERNAME = "USERNAME";
     public static String PASSWORD = "PASSWORD";
-    public static String WEB_USER_ID = "WEB_USER_ID";
     public static String WEB_SERVICE_URL = "WEB_SERVICE_URL";
-    public static String PENDING = "Pending";
-    public static String RESOLVED = "Resolved";
-    public static String MENTOR_ROLE = "NATIONAL";
     private static Gson gson;
     private static AppUtil appInstance;
     private static Context mContext;
@@ -78,10 +64,6 @@ public class AppUtil {
 
     public static Gson createGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
-        /*new GraphAdapterBuilder()
-                .addType(Patient.class)
-                .addType(Contact.class)
-                .registerOn(gsonBuilder);*/
         gson = gsonBuilder.excludeFieldsWithoutExposeAnnotation().setDateFormat("yyyy-MM-dd").create();
         return gson;
     }
@@ -191,11 +173,6 @@ public class AppUtil {
         return sp.getString(USERNAME, "Anonymous");
     }
 
-    public static long getWebUserId(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getLong(WEB_USER_ID, 9000000);
-    }
-
     public static String getPassword(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getString(PASSWORD, "Anonymous");
@@ -204,11 +181,6 @@ public class AppUtil {
     public static Boolean isUserLoggedIn(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean(LOGGED_IN, Boolean.FALSE);
-    }
-
-    public static String getUserRole(Context context){
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(MENTOR_ROLE, "Role");
     }
 
     public static void removePrefs(String key, Context context) {

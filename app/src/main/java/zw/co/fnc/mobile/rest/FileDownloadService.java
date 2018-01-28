@@ -10,9 +10,6 @@ import android.util.Log;
 import com.opencsv.CSVWriter;
 import com.squareup.okhttp.HttpUrl;
 import org.json.JSONArray;
-import zw.co.fnc.mobile.activity.util.PermissionsActivity;
-import zw.co.fnc.mobile.activity.util.PermissionsChecker;
-import zw.co.fnc.mobile.business.domain.InterventionCategory;
 import zw.co.fnc.mobile.business.domain.MotherChildDTO;
 import zw.co.fnc.mobile.util.AppUtil;
 

@@ -38,10 +38,10 @@ public class MotherChildDTO implements Serializable{
     public static MotherChildDTO fromJSON(JSONObject object){
         MotherChildDTO item = new MotherChildDTO();
         try{
-            item.code = object.getString("code");
+            item.code = String.valueOf(object.getLong("code"));
             item.name = object.getString("name");
             item.dob = object.getString("dob");
-            item.houseHold = object.getString("houseHold");
+            item.houseHold = object.getString("household");
             item.village = object.getString("village");
             item.ward = object.getString("ward");
             item.district = object.getString("district");

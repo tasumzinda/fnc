@@ -11,6 +11,7 @@ import zw.co.fnc.mobile.business.domain.*;
 import zw.co.fnc.mobile.util.AppUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by User on 3/8/2017.
@@ -89,7 +90,6 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
 
             }
         });
-        Log.d("Test", String.valueOf(microPlan != null));
         if(driver != null){
             int i = 0;
             for(KeyProblemCategory d : KeyProblemCategory.getAll()){
@@ -244,6 +244,18 @@ public class KeyProblemActivity extends BaseActivity implements View.OnClickList
         if(getInterventions().size() == 0){
             AppUtil.createShortNotification(this, "Please select at least one intervention category");
             isValid = false;
+        }
+
+        if(microPlan != 0L){
+            QuarterlyMicroPlan item = QuarterlyMicroPlan.findById(microPlan);
+            List<KeyProblem> list = KeyProblem.findByMicroPlan(item);
+            for(KeyProblem m : list){
+                if(m.keyProblemCategory.equals(driverOfStunting.getSelectedItem())){
+                    AppUtil.createShortNotification(this, "You can not use the same driver twice on the same action plan");
+                    isValid = false;
+                    break;
+                }
+            }
         }
         return isValid;
     }

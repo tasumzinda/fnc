@@ -105,6 +105,11 @@ public class BaseActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+        if (id == R.id.action_logout) {
+            logout();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -299,5 +304,12 @@ public class BaseActivity extends AppCompatActivity {
             }
         }
         return isValid;
+    }
+
+    public void logout() {
+        AppUtil.removePrefs(AppUtil.LOGGED_IN, this);
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

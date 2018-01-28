@@ -71,77 +71,120 @@ public class PullService extends IntentService {
                     loadStrategyCategories(AppUtil.run(url, this));
                 }
             }
-            for(QuarterlyMicroPlan item : QuarterlyMicroPlan.findByPushed()){
+            for(QuarterlyMicroPlan item : QuarterlyMicroPlan.getAll()){
                 QuarterlyMicroPlan res = save(run(AppUtil.getPushPlanUrl(context, item.serverId), item), item);
-                Log.d("PlanRes", AppUtil.createGson().toJson(res));
-                for(KeyProblem problem : KeyProblem.findByMicroPlan(item)){
-                    problem.quarterlyMicroPlan = res;
-                    problem.save();
-                    problem.indicators = Indicator.findByKeyProblem(problem);
-                    problem.interventions = InterventionCategory.findByKeyProblem(problem);
-                    KeyProblem prob = save(run(AppUtil.getPushKeyProblemUrl(context, problem.serverId), problem), problem);
-                    Log.d("ProblemRes", AppUtil.createGson().toJson(prob));
-                    List<InterventionCategory> list = InterventionCategory.findByKeyProblem(problem);
-                    List<InterventionCategory> interventionCategories = new ArrayList<>();
-                    for(InterventionCategory intervention : list){
-                        List<ActionRequired> actionRequireds = ActionRequired.findByKeyProblemAndInterventionCategory(problem, intervention);
-                        List<ActionRequired> actionRequiredList = new ArrayList<>();
-                        for(ActionRequired actionRequired : actionRequireds){
-                            actionRequired.keyProblem = problem;
-                            actionRequired.resourcesNeededCategorys = ResourcesNeededCategory.findByActionRequired(actionRequired);
-                            actionRequired.potentialChallengesCategorys = PotentialChallengesCategory.findByActionRequired(actionRequired);
-                            actionRequired.strategyCategorys = StrategyCategory.findByActionRequired(actionRequired);
-                            actionRequired.departments = DepartmentCategory.findByActionRequired(actionRequired);
-                            actionRequiredList.add(actionRequired);
-                            ActionRequired action = save(run(AppUtil.getPushActionRequiredUrl(context, actionRequired.serverId), actionRequired), actionRequired);
-                            Log.d("Action", AppUtil.createGson().toJson(action));
-                            if(action != null){
-                                for(ActionRequiredPotentialChallengesCategoryContract m : ActionRequiredPotentialChallengesCategoryContract.findByActionRequired(actionRequired)){
-                                    m.delete();
-                                    Log.d("Deleted challenge", m.potentialChallengesCategory.name);
-                                }
+                if(res != null){
+                    for(KeyProblem problem : KeyProblem.findByMicroPlan(item)){
+                        problem.quarterlyMicroPlan = res;
+                        problem.save();
+                        problem.indicators = Indicator.findByKeyProblem(problem);
+                        problem.interventions = InterventionCategory.findByKeyProblem(problem);
+                        KeyProblem prob = save(run(AppUtil.getPushKeyProblemUrl(context, problem.serverId), problem), problem);
+                        List<InterventionCategory> list = InterventionCategory.findByKeyProblem(problem);
+                        for(InterventionCategory intervention : list){
+                            List<ActionRequired> actionRequireds = ActionRequired.findByKeyProblemAndInterventionCategory(problem, intervention);
+                            List<ActionRequired> actionRequiredList = new ArrayList<>();
+                            for(ActionRequired actionRequired : actionRequireds){
+                                actionRequired.keyProblem = problem;
+                                actionRequired.resourcesNeededCategorys = ResourcesNeededCategory.findByActionRequired(actionRequired);
+                                actionRequired.potentialChallengesCategorys = PotentialChallengesCategory.findByActionRequired(actionRequired);
+                                actionRequired.strategyCategorys = StrategyCategory.findByActionRequired(actionRequired);
+                                actionRequired.departments = DepartmentCategory.findByActionRequired(actionRequired);
+                                actionRequiredList.add(actionRequired);
+                                ActionRequired action = save(run(AppUtil.getPushActionRequiredUrl(context, actionRequired.serverId), actionRequired), actionRequired);
+                                Log.d("Action", AppUtil.createGson().toJson(action));
+                                if(action != null){
+                                    for(ActionRequiredPotentialChallengesCategoryContract m : ActionRequiredPotentialChallengesCategoryContract.findByActionRequired(actionRequired)){
+                                        m.delete();
+                                        Log.d("Deleted challenge", m.potentialChallengesCategory.name);
+                                    }
 
-                                for(ActionRequiredDepartmentCategoryContract m : ActionRequiredDepartmentCategoryContract.findByActionRequired(actionRequired)){
-                                    m.delete();
-                                    Log.d("Deleted department", m.departmentCategory.name);
-                                }
+                                    for(ActionRequiredDepartmentCategoryContract m : ActionRequiredDepartmentCategoryContract.findByActionRequired(actionRequired)){
+                                        m.delete();
+                                        Log.d("Deleted department", m.departmentCategory.name);
+                                    }
 
-                                for(ActionRequiredResourcesNeededContract m : ActionRequiredResourcesNeededContract.findByActionRequired(actionRequired)){
-                                    m.delete();
-                                    Log.d("Deleted resource", m.resourcesNeededCategory.name);
-                                }
+                                    for(ActionRequiredResourcesNeededContract m : ActionRequiredResourcesNeededContract.findByActionRequired(actionRequired)){
+                                        m.delete();
+                                        Log.d("Deleted resource", m.resourcesNeededCategory.name);
+                                    }
 
-                                for(ActionRequiredStrategyCategoryContract m : ActionRequiredStrategyCategoryContract.findByActionRequired(actionRequired)){
-                                    m.delete();
-                                    Log.d("Deleted challenge", m.strategyCategory.name);
+                                    for(ActionRequiredStrategyCategoryContract m : ActionRequiredStrategyCategoryContract.findByActionRequired(actionRequired)){
+                                        m.delete();
+                                        Log.d("Deleted challenge", m.strategyCategory.name);
+                                    }
+                                    actionRequired.delete();
+                                    action.delete();
+                                    Log.d("Deleted action", action.actionCategory.name);
                                 }
-                                actionRequired.delete();
-                                action.delete();
-                                Log.d("Deleted action", action.actionCategory.name);
                             }
                         }
-                    }
-                    if(prob != null){
-                        for(KeyProblemIndicatorContract m : KeyProblemIndicatorContract.findByKeyProblem(problem)){
-                            m.delete();
-                            Log.d("Deleted indicator", m.indicator.name);
+                        if(prob != null){
+                            for(KeyProblemIndicatorContract m : KeyProblemIndicatorContract.findByKeyProblem(problem)){
+                                m.delete();
+                                Log.d("Deleted indicator", m.indicator.name);
+                            }
+
+                            for(KeyProblemInterventionCategoryContract m : KeyProblemInterventionCategoryContract.findByKeyProblem(problem)){
+                                m.delete();
+                                Log.d("Deleted indicator", m.interventionCategory.name);
+                            }
+                            problem.delete();
+                            prob.delete();
+                            Log.d("Deleted problem", prob.keyProblemCategory.name);
                         }
 
-                        for(KeyProblemInterventionCategoryContract m : KeyProblemInterventionCategoryContract.findByKeyProblem(problem)){
-                            m.delete();
-                            Log.d("Deleted indicator", m.interventionCategory.name);
-                        }
-                        problem.delete();
-                        prob.delete();
-                        Log.d("Deleted problem", prob.keyProblemCategory.name);
                     }
+                    if(res != null){
+                        item.delete();
+                        res.delete();
+                        Log.d("Deleted plan", item.serverId + "");
+                    }
+                }else{
+                    for(KeyProblem problem : KeyProblem.findByMicroPlan(item)){
+                        List<InterventionCategory> list = InterventionCategory.findByKeyProblem(problem);
+                        for(InterventionCategory intervention : list){
+                            List<ActionRequired> actionRequireds = ActionRequired.findByKeyProblemAndInterventionCategory(problem, intervention);
+                            List<ActionRequired> actionRequiredList = new ArrayList<>();
+                            for(ActionRequired actionRequired : actionRequireds){
+                                    for(ActionRequiredPotentialChallengesCategoryContract m : ActionRequiredPotentialChallengesCategoryContract.findByActionRequired(actionRequired)){
+                                        m.delete();
+                                        Log.d("Deleted challenge", m.potentialChallengesCategory.name);
+                                    }
 
-                }
-                if(res != null){
+                                    for(ActionRequiredDepartmentCategoryContract m : ActionRequiredDepartmentCategoryContract.findByActionRequired(actionRequired)){
+                                        m.delete();
+                                        Log.d("Deleted department", m.departmentCategory.name);
+                                    }
+
+                                    for(ActionRequiredResourcesNeededContract m : ActionRequiredResourcesNeededContract.findByActionRequired(actionRequired)){
+                                        m.delete();
+                                        Log.d("Deleted resource", m.resourcesNeededCategory.name);
+                                    }
+
+                                    for(ActionRequiredStrategyCategoryContract m : ActionRequiredStrategyCategoryContract.findByActionRequired(actionRequired)){
+                                        m.delete();
+                                        Log.d("Deleted challenge", m.strategyCategory.name);
+                                    }
+                                    actionRequired.delete();
+                            }
+                        }
+                            for(KeyProblemIndicatorContract m : KeyProblemIndicatorContract.findByKeyProblem(problem)){
+                                m.delete();
+                                Log.d("Deleted indicator", m.indicator.name);
+                            }
+
+                            for(KeyProblemInterventionCategoryContract m : KeyProblemInterventionCategoryContract.findByKeyProblem(problem)){
+                                m.delete();
+                                Log.d("Deleted indicator", m.interventionCategory.name);
+                            }
+                            problem.delete();
+
+                    }
                     item.delete();
-                    res.delete();
-                    Log.d("Deleted plan", item.serverId + "");
                 }
+
+
             }
         }catch (Exception ex){
             ex.printStackTrace();
@@ -349,7 +392,7 @@ public class PullService extends IntentService {
         try {
             JSONArray jsonArray = new JSONArray(data);
             List<InterventionCategory> list = InterventionCategory.fromJSON(jsonArray);
-            for (InterventionCategory item : list) {                Log.d("Intervention", AppUtil.createGson().toJson(item));
+            for (InterventionCategory item : list) {
                 InterventionCategory checkDuplicate = InterventionCategory.findByServerId(item.serverId);
                 if (checkDuplicate == null) {
                     item.save();
@@ -442,10 +485,15 @@ public class PullService extends IntentService {
         Log.d("Result", data);
         try{
             Long id = Long.parseLong(data);
-            item.serverId = id;
-            item.pushed = 0;
-            item.save();
-            Log.d("Saved plan", AppUtil.createGson().toJson(item));
+            if(id != 0L){
+                item.serverId = id;
+                item.pushed = 0;
+                item.save();
+                Log.d("Saved plan", AppUtil.createGson().toJson(item));
+            }else{
+                return null;
+            }
+
         }catch (Exception ex){
             ex.printStackTrace();
             return null;
