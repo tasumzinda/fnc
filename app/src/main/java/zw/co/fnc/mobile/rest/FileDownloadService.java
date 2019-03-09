@@ -52,11 +52,12 @@ public class FileDownloadService extends IntentService {
     }
 
     private String loadMotherChilds(String data) {
+        Log.d("Data", data);
         String msg = "MotherChild";
         try {
             JSONArray jsonArray = new JSONArray(data);
             List<MotherChildDTO> list = MotherChildDTO.fromJSON(jsonArray);
-            String fileName = "mother_child.csv";
+            String fileName = "Registration.csv";
             String filePath = saveDir + File.separator + fileName;
             File file = new File(filePath);
             CSVWriter csvWriter;
@@ -66,12 +67,12 @@ public class FileDownloadService extends IntentService {
                 csvWriter = new CSVWriter(fileWriter);
             }else{
                 csvWriter = new CSVWriter(new FileWriter(filePath));
+                String [] header = new String[] {"ID key", "Name", "CSex", "DOB", "HouseHoldName", "Status", "Age", "Village", "Ward", "District", "Province", "HouseHoldNo", "MobileNo", "CWeight", "HivTest"};
+                csvWriter.writeNext(header);
             }
-            String [] header = new String[]{"code", "name", "dob", "household", "village", "ward", "district", "province"};
-            csvWriter.writeNext(header);
             for (MotherChildDTO item : list) {
                 if(item != null){
-                    String [] content = new String[]{item.code, item.name, item.dob, item.houseHold, item.village, item.ward, item.district, item.province};
+                    String [] content = new String[] {item.code, item.name, "", item.dob, item.houseHold, item.motherChild, item.age, item.village, item.ward, item.district, item.province, "", "", "", ""};
                     csvWriter.writeNext(content);
                 }
             }

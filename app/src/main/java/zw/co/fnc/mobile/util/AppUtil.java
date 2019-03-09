@@ -29,7 +29,7 @@ public class AppUtil {
 
     public static MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-    public static String APP_URL = "http://192.168.43.234:8084/fnc-mobile/rest/mobile/";
+    public static String APP_URL = "http://192.168.43.66:8084/fnc-mobile/rest/mobile/";
     public static String LOGGED_IN = "LOGGED_IN";
     public static String USERNAME = "USERNAME";
     public static String PASSWORD = "PASSWORD";

@@ -29,6 +29,10 @@ public class MotherChildDTO implements Serializable{
     public String district;
     @Expose
     public String province;
+    @Expose
+    public String age;
+    @Expose
+    public String motherChild;
 
 
     public MotherChildDTO(){
@@ -37,19 +41,16 @@ public class MotherChildDTO implements Serializable{
 
     public static MotherChildDTO fromJSON(JSONObject object){
         MotherChildDTO item = new MotherChildDTO();
-        try{
-            item.code = String.valueOf(object.getLong("code"));
-            item.name = object.getString("name");
-            item.dob = object.getString("dob");
-            item.houseHold = object.getString("household");
-            item.village = object.getString("village");
-            item.ward = object.getString("ward");
-            item.district = object.getString("district");
-            item.province = object.getString("province");
-        }catch (JSONException ex){
-            ex.printStackTrace();
-            return null;
-        }
+        item.code = String.valueOf(object.optLong("code"));
+        item.name = object.optString("name");
+        item.dob = object.optString("dob");
+        item.houseHold = object.optString("household");
+        item.village = object.optString("village");
+        item.ward = object.optString("ward");
+        item.district = object.optString("district");
+        item.province = object.optString("province");
+        item.age = object.optString("age");
+        item.motherChild = object.optString("motherChild");
         return item;
     }
 
