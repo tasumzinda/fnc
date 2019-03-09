@@ -4,7 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="activity_height">5dp</dimen>
-    <dimen name="input_side_margin">5dp</dimen>
+    <dimen name="input_side_margin">20dp</dimen>
     <dimen name="text_input_layout_margin_top">8dp</dimen>
     <dimen name="text_input_layout_margin_bottom">8dp</dimen>
     <dimen name="text_size">16sp</dimen>
